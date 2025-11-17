@@ -17,7 +17,7 @@ spec:
   values:
     replicaCount: 1
 
-    serviceDNS:
+    serviceDns:
       type: LoadBalancer
       loadBalancerIP: 192.168.0.200
       annotations: {}
