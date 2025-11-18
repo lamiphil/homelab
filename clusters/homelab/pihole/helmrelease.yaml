@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: pihole
-      version: 2.34.0   # vérifie la dernière version
+      version: 2.34.0 
       sourceRef:
         kind: HelmRepository
         name: mojo2600
@@ -28,7 +28,8 @@ spec:
       loadBalancerIP: 192.168.0.202
       annotations: {}
 
-    adminPassword: "admin"
+    admin:
+      existingSecret: pihole-admin-secret
 
     persistentVolumeClaim:
       enabled: true
