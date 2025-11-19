@@ -32,6 +32,8 @@ spec:
     grafana:
       service:
         type: LoadBalancer
+      nodeSelector:
+        kubernetes.io/hostname: ubuntuserver
 
 
     prometheus:
