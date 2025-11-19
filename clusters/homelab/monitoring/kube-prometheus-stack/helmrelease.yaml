@@ -39,7 +39,11 @@ spec:
     prometheus:
       service:
         type: LoadBalancer
+      nodeSelector:
+        kubernetes.io/hostname: ubuntuserver
 
     alertmanager:
       service:
         type: LoadBalancer
+      nodeSelector:
+        kubernetes.io/hostname: ubuntuserver
