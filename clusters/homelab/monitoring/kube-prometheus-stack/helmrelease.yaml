@@ -22,16 +22,17 @@ spec:
     remediation:
       retries: 3
 
-  values:
-    grafana:
-      service:
-        type: LoadBalancer
-
   valuesFrom:
     - kind: Secret 
       name: grafana-admin
       valuesKey: adminPassword
       targetPath: grafana.adminPassword
+
+  values:
+    grafana:
+      service:
+        type: LoadBalancer
+
 
     prometheus:
       service:
