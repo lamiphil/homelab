@@ -34,6 +34,7 @@ spec:
         type: LoadBalancer
       nodeSelector:
         kubernetes.io/hostname: ubuntuserver
+      defaultDashboardsTimezone: "America/Montreal"
 
     prometheus:
       service:
