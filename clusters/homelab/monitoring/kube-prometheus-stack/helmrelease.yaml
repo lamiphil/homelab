@@ -35,6 +35,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: ubuntuserver
       defaultDashboardsTimezone: "America/Montreal"
+      adminUser: "lamiphil"
 
     prometheus:
       service:
