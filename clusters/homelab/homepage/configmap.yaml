@@ -20,6 +20,10 @@ data:
         - Github:
             - icon: github.svg
               href: https://github.com/lamiphil
+    - Entertainment:
+        - Youtube:
+            - icon: youtube.svg
+              href: https://youtube.com
   services.yaml: |
     - Monitoring:
         - Grafana:
