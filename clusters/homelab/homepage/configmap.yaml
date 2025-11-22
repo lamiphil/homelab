@@ -18,7 +18,7 @@ data:
   bookmarks.yaml: |
     - Developer:
         - Github:
-            icon: github.png
+          - icon: github.png
             href: https://github.com/lamiphil
   services.yaml: |
     - Monitoring:
