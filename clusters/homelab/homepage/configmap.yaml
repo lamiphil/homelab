@@ -18,15 +18,17 @@ data:
   bookmarks.yaml: |
     - Developer:
         - Github:
-          - icon: github.png
-            href: https://github.com/lamiphil
+            - icon: github.svg
+              href: https://github.com/lamiphil
   services.yaml: |
     - Monitoring:
         - Grafana:
+            icon: grafana.svg
             href: http://grafana.homelab/login
 
     - Network:
         - Pi-hole:
+            icon: pi-hole.svg
             href: http://pihole.homelab/admin
 
   widgets.yaml: |
