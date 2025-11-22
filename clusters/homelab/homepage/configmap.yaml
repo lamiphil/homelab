@@ -18,23 +18,17 @@ data:
   bookmarks.yaml: |
     - Developer:
         - Github:
-            - abbr: GH
-              href: https://github.com/
+            icon: github.png
+            href: https://github.com/lamiphil
   services.yaml: |
-    - My First Group:
-        - My First Service:
-            href: http://localhost/
-            description: Homepage is awesome
+    - Monitoring:
+        - Grafana:
+            href: http://grafana.homelab/login
 
-    - My Second Group:
-        - My Second Service:
-            href: http://localhost/
-            description: Homepage is the best
+    - Network:
+        - Pi-hole:
+            href: http://pihole.homelab/admin
 
-    - My Third Group:
-        - My Third Service:
-            href: http://localhost/
-            description: Homepage is 😎
   widgets.yaml: |
     - kubernetes:
         cluster:
