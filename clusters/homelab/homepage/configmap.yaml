@@ -24,6 +24,13 @@ data:
         - Youtube:
             - icon: youtube.svg
               href: https://youtube.com
+        - Soundcloud:
+            - icon: soundcloud.svg
+              href: https://soundcloud.com
+    - Communication:
+        - Messenger:
+            - icon: messenger.svg
+              href: https://messenger.com
   services.yaml: |
     - Monitoring:
         - Grafana:
