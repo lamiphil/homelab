@@ -25,11 +25,11 @@ data:
             - icon: youtube.svg
               href: https://youtube.com
         - Soundcloud:
-            - icon: soundcloud.svg
+            - icon: mdi-soundcloud
               href: https://soundcloud.com
     - Communication:
         - Messenger:
-            - icon: messenger.svg
+            - icon: facebook-messenger.svg
               href: https://messenger.com
   services.yaml: |
     - Monitoring:
