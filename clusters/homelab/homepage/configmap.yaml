@@ -20,17 +20,21 @@ data:
         - Github:
             - icon: github.svg
               href: https://github.com/lamiphil
+              description: ""
     - Entertainment:
         - Youtube:
             - icon: youtube.svg
               href: https://youtube.com
+              description: ""
         - Soundcloud:
             - icon: mdi-soundcloud
               href: https://soundcloud.com
+              description: ""
     - Communication:
         - Messenger:
             - icon: facebook-messenger.svg
               href: https://messenger.com
+              description: ""
   services.yaml: |
     - Monitoring:
         - Grafana:
