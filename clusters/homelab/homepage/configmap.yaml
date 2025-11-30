@@ -46,6 +46,10 @@ data:
             icon: pi-hole.svg
             href: http://pihole.homelab/admin
 
+    - Entertainment:
+        - Jellyfin:
+            icon: jellyfin.svg
+            href: http://jellyfin.homelab:8096
   widgets.yaml: |
     - kubernetes:
         cluster:
