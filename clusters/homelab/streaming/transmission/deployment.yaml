@@ -39,7 +39,7 @@ spec:
             - name: downloads
               mountPath: /downloads
             - name: watch
-              /watch
+              mountPath: /watch
       volumes:
         - name: config
           hostPath:
