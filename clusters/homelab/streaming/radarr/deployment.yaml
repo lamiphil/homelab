@@ -36,6 +36,13 @@ spec:
               mountPath: /downloads
             - name: movies
               mountPath: /movies
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "200Mi"
+            limits:
+              cpu: "300m"
+              memory: "500Mi"
       volumes:
         - name: config
           hostPath:

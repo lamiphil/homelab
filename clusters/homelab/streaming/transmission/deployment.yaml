@@ -40,6 +40,14 @@ spec:
               mountPath: /downloads
             - name: watch
               mountPath: /watch
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "200Mi"
+            limits:
+              cpu: "700m"
+              memory: "600Mi"
+
       volumes:
         - name: config
           hostPath:

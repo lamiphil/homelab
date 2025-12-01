@@ -32,6 +32,13 @@ spec:
               mountPath: /cache
             - name: media
               mountPath: /media
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "400Mi"
+            limits:
+              cpu: "1500m"
+              memory: "2Gi"
       volumes:
         - name: config
           hostPath:

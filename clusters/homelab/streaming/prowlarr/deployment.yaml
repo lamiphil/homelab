@@ -32,8 +32,16 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "150Mi"
+            limits:
+              cpu: "300m"
+              memory: "400Mi"
       volumes:
         - name: config
           hostPath:
             path: /srv/streaming/prowlarr/config
             type: DirectoryOrCreate
+
