@@ -38,6 +38,8 @@ spec:
               mountPath: /config
             - name: downloads
               mountPath: /downloads
+            - name: watch
+              /watch
       volumes:
         - name: config
           hostPath:
@@ -46,4 +48,8 @@ spec:
         - name: downloads
           hostPath:
             path: /srv/media/downloads
+            type: DirectoryOrCreate
+        - name: watch
+          hostPath:
+            path: /srv/streaming/transmission/watch
             type: DirectoryOrCreate
