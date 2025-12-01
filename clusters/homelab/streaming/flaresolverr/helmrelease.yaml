@@ -1,0 +1,41 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: flaresolverr
+  namespace: streaming
+spec:
+  releaseName: flaresolverr
+  chart:
+    spec:
+      chart: flaresolverr
+      version: 1.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: flaresolverr
+        namespace: flux-system
+
+  interval: 1h
+
+  values:
+    image:
+      tag: latest
+
+    # Le port HTTPS n'est pas nécessaire
+    service:
+      type: ClusterIP
+      port: 8191
+
+    # FlareSolverr demande souvent un timeout plus long
+    config:
+      LOG_LEVEL: info
+      CAPTCHA_SOLVER: none
+      BROWSER_TIMEOUT: 60000
+      MAX_TIMEOUT: 60000
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
