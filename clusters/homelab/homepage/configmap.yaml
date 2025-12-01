@@ -46,7 +46,7 @@ data:
             icon: pi-hole.svg
             href: http://pihole.homelab/admin
         - Router:
-            href: 192.168.0.1
+            href: http://192.168.0.1
 
     - Streaming:
         - Jellyfin:
