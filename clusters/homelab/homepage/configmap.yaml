@@ -51,7 +51,7 @@ data:
             icon: jellyfin.svg
             href: http://jellyfin.homelab:8096
         - Transmission:
-            icon: jellyfin.svg
+            icon: transmission.svg
             href: http://transmission.homelab:9091
         - Radarr:
             icon: radarr.svg
