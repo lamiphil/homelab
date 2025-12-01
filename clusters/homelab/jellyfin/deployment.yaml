@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jellyfin
-  namespace: jellyfin
+  namespace: streaming
 spec:
   replicas: 1
   selector:
@@ -14,7 +14,7 @@ spec:
         app: jellyfin
     spec:
       nodeSelector:
-        role: jellyfin-storage
+        role: jellyfin-storage   # ton label actuel sur minipc
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:latest
@@ -35,11 +35,11 @@ spec:
       volumes:
         - name: config
           hostPath:
-            path: /srv/jellyfin/config
+            path: /srv/streaming/jellyfin/config
             type: DirectoryOrCreate
         - name: cache
           hostPath:
-            path: /srv/jellyfin/cache
+            path: /srv/streaming/jellyfin/cache
             type: DirectoryOrCreate
         - name: media
           hostPath:
