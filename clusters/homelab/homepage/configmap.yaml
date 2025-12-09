@@ -21,6 +21,10 @@ data:
             - icon: github.svg
               href: https://github.com/lamiphil
               description: ""
+        - ChatGPT:
+            - icon: chatgpt.svg
+              href: https://chatgpt.com
+              description: ""
     - Entertainment:
         - Youtube:
             - icon: youtube.svg
