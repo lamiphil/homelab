@@ -14,7 +14,7 @@ spec:
         app: jellyfin
     spec:
       nodeSelector:
-        role: jellyfin-storage   # ton label actuel sur minipc
+        role: streaming
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:latest

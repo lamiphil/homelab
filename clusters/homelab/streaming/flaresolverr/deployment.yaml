@@ -16,7 +16,7 @@ spec:
         app: flaresolverr
     spec:
       nodeSelector:
-        role: jellyfin-storage
+        role: streaming
       containers:
         - name: flaresolverr
           image: ghcr.io/flaresolverr/flaresolverr:latest

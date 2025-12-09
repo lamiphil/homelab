@@ -14,7 +14,7 @@ spec:
         app: radarr
     spec:
       nodeSelector:
-        role: jellyfin-storage
+        role: streaming
       containers:
         - name: radarr
           image: lscr.io/linuxserver/radarr:latest

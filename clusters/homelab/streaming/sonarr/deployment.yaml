@@ -14,7 +14,7 @@ spec:
         app: sonarr
     spec:
       nodeSelector:
-        role: jellyfin-storage
+        role: streaming
       containers:
         - name: sonarr
           image: lscr.io/linuxserver/sonarr:latest
