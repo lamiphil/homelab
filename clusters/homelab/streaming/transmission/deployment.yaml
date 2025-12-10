@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transmission
+  name: transmission-vpn
   namespace: streaming
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: transmission
+      app: transmission-vpn
   template:
     metadata:
       labels:
-        app: transmission
+        app: transmission-vpn
     spec:
       nodeSelector:
         role: streaming
@@ -27,7 +27,7 @@ spec:
             - name: TZ
               value: "America/Toronto"
           ports:
-            - containerPort: 9091   # Web UI
+            - containerPort: 9091
               name: http
           volumeMounts:
             - name: config
@@ -44,6 +44,41 @@ spec:
               cpu: "700m"
               memory: "600Mi"
 
+        - name: vpn
+          image: qmcgaw/gluetun:latest
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "private internet access"
+            # PIA + OpenVPN
+            - name: VPN_TYPE
+              value: "openvpn"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pia-openvpn-credentials
+                  key: OPENVPN_USER
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pia-openvpn-credentials
+                  key: OPENVPN_PASSWORD
+            - name: SERVER_REGIONS
+              value: "CA Montreal"
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: TZ
+              value: "America/Toronto"
+          ports:
+            - name: http
+              containerPort: 9091
+          volumeMounts:
+            - name: gluetun-config
+              mountPath: /gluetun
+
       volumes:
         - name: config
           hostPath:
@@ -57,3 +92,5 @@ spec:
           hostPath:
             path: /srv/streaming/transmission/watch
             type: DirectoryOrCreate
+        - name: gluetun-config
+          emptyDir: {}

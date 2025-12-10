@@ -5,8 +5,9 @@ metadata:
   namespace: streaming
 spec:
   type: LoadBalancer
+  loadBalancerIP: 192.168.0.206
   selector:
-    app: transmission
+    app: transmission-vpn
   ports:
     - protocol: TCP
       port: 9091
