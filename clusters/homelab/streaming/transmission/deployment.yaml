@@ -82,3 +82,7 @@ spec:
         - name: wireguard-config
           secret:
             secretName: transmission-vpn-wg
+        - name: dev-net-tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
