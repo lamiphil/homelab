@@ -83,6 +83,6 @@ spec:
           secret:
             secretName: transmission-vpn-wg
         - name: dev-net-tun
-        hostPath:
-          path: /dev/net/tun
-          type: CharDevice
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
