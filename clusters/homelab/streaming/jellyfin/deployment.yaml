@@ -38,7 +38,7 @@ spec:
               memory: "400Mi"
             limits:
               cpu: "1500m"
-              memory: "2Gi"
+              memory: "4Gi"
       volumes:
         - name: config
           hostPath:
