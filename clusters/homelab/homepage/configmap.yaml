@@ -25,6 +25,7 @@ data:
             - icon: chatgpt.svg
               href: https://chatgpt.com
               description: ""
+
     - Entertainment:
         - Youtube:
             - icon: youtube.svg
@@ -50,7 +51,11 @@ data:
             icon: pi-hole.svg
             href: http://pihole.homelab/admin
         - Router:
+            icon: mdi-router-network
             href: http://192.168.0.1
+        - Tailscale:
+            icon: tailscale.svg
+            href: https://login.tailscale.com/admin/machines
 
     - Streaming:
         - Jellyfin:
