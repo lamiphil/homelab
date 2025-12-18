@@ -29,7 +29,6 @@ spec:
             role = "pod"
           }
 
-          # Lit les logs containers (CRI) via le node
           loki.source.kubernetes "pods" {
             targets    = discovery.kubernetes.pods.targets
             forward_to = [loki.write.default.receiver]
