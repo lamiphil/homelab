@@ -15,33 +15,6 @@ spec:
     spec:
       nodeSelector:
         role: streaming
-      initContainers:
-        - name: qb-webui-creds
-          image: busybox:1.36
-          command: ["/bin/sh","-c"]
-          args:
-            - |
-              set -e
-
-              CONF="/config/qBittorrent/qBittorrent.conf"
-              mkdir -p /config/qBittorrent
-              touch "$CONF"
-
-              # Supprime les anciennes valeurs si elles existent
-              grep -vE '^WebUI\\Username=|^WebUI\\Password_PBKDF2=' "$CONF" > /tmp/qbt.conf || true
-
-              # Ajoute les valeurs depuis le secret
-              echo "WebUI\\Username=$(cat /secrets/username)" >> /tmp/qbt.conf
-              echo "WebUI\\Password_PBKDF2=$(cat /secrets/password_pbkdf2)" >> /tmp/qbt.conf
-
-              mv /tmp/qbt.conf "$CONF"
-          volumeMounts:
-            - name: qb-config
-              mountPath: /config
-            - name: qb-webui-creds
-              mountPath: /secrets
-              readOnly: true
-
       containers:
         # qBittorrent
         - name: qbittorrent
@@ -114,10 +87,6 @@ spec:
               mountPath: /dev/net/tun
 
       volumes:
-        - name: qb-webui-creds
-          secret:
-            secretName: qbittorrent-webui-creds
-
         - name: qb-config
           hostPath:
             path: /srv/streaming/qbittorrent/config
