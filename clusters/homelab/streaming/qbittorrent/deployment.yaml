@@ -18,7 +18,7 @@ spec:
       containers:
         # qBittorrent
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:4.1.9
+          image: lscr.io/linuxserver/qbittorrent:4.1.9.99201911190849-6738-0b055d8ubuntu18.04.1-ls54
           env:
             - name: PUID
               value: "1000"
