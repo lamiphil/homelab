@@ -17,7 +17,7 @@ spec:
         role: streaming
       containers:
         - name: radarr
-          image: lscr.io/linuxserver/radarr:latest
+          image: lscr.io/linuxserver/radarr:5.3.6
           imagePullPolicy: Always
           env:
             - name: PUID
