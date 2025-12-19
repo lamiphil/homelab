@@ -62,9 +62,17 @@ spec:
               value: "8080,6881"
             - name: FIREWALL_INPUT_PORTS
               value: "8080,6881"
-            # Optionnel mais pratique
             - name: DOT
               value: "off"
+            # évite les restarts causés par ICMP
+            - name: HEALTHCHECK_TARGETS
+              value: "cloudflare.com:443"
+            - name: HEALTHCHECK_METHOD
+              value: "tcp"
+            # autorise ton LAN + les CIDR k3s
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.42.0.0/16,10.43.0.0/16,192.168.0.0/24"
+
           envFrom:
             - secretRef:
                 name: qbittorrent-vpn-wg
