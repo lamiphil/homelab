@@ -65,10 +65,6 @@ spec:
             # Optionnel mais pratique
             - name: DOT
               value: "off"
-            - name: VPN_PORT_FORWARDING
-              value: "on"
-            - name: VPN_PORT_FORWARDING_PROVIDER
-              value: "protonvpn"
           envFrom:
             - secretRef:
                 name: qbittorrent-vpn-wg
