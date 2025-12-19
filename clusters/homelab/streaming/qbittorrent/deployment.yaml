@@ -72,6 +72,8 @@ spec:
             # autorise ton LAN + les CIDR k3s
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: "10.42.0.0/16,10.43.0.0/16,192.168.0.0/24"
+            - name: VERSION_CHECK
+              value: "off"
 
           envFrom:
             - secretRef:
