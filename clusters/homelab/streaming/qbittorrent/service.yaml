@@ -4,8 +4,7 @@ metadata:
   name: qbittorrent
   namespace: streaming
 spec:
-  type: LoadBalancer
-  loadBalancerIP: 192.168.0.210
+  type: ClusterIP
   selector:
     app: qbittorrent-vpn
   ports:
