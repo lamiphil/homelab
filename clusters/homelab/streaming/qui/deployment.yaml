@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qui
+  template:
+    metadata:
+      labels:
+        app: qui
+    spec:
+      containers:
+        - name: qui
+          image: ghcr.io/autobrr/qui:latest
+          ports:
+            - name: http
+              containerPort: 7476
+          env:
+            - name: QUI__HOST
+              value: "0.0.0.0"
+            - name: QUI__PORT
+              value: "7476"
+            - name: QUI__LOG_LEVEL
+              value: "INFO"
