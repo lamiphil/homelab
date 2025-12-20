@@ -14,12 +14,13 @@ spec:
         namespace: flux-system
       interval: 1h
   values:
+    config:
+      inCluster: true
+      baseURL: "/"
     service:
       type: LoadBalancer
       port: 4466
 
-    config:
-      inCluster: true
 
     serviceAccount:
       create: true
