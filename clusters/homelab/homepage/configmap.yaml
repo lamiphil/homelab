@@ -64,9 +64,9 @@ data:
         - Jellyfin:
             icon: jellyfin.svg
             href: http://jellyfin.homelab:8096
-        - qBittorrent:
-            icon: qbittorrent.svg
-            href: http://qbittorrent.homelab:8080
+        - qUI:
+            icon: qui.svg
+            href: http://qui.homelab:7476
         - Radarr:
             icon: radarr.svg
             href: http://radarr.homelab:7878
