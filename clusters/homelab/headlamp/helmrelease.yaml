@@ -17,3 +17,13 @@ spec:
     service:
       type: LoadBalancer
 
+    config:
+      inCluster: true
+
+    serviceAccount:
+      create: true
+    
+    clusterRoleBinding:
+      create: true
+      clusterRoleName: cluster-admin
+
