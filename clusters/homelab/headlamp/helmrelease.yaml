@@ -16,6 +16,7 @@ spec:
   values:
     service:
       type: LoadBalancer
+      port: 4466
 
     config:
       inCluster: true
