@@ -16,7 +16,6 @@ spec:
   values:
     config:
       inCluster: true
-      baseURL: "/"
 
     service:
       type: LoadBalancer
