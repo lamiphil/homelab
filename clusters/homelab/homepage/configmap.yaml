@@ -15,36 +15,14 @@ data:
   #      url: https://longhorn.my.network
   custom.css: ""
   custom.js: ""
-  bookmarks.yaml: |
-    - Developer:
-        - Github:
-            - icon: github.svg
-              href: https://github.com/lamiphil
-              description: ""
-        - ChatGPT:
-            - icon: chatgpt.svg
-              href: https://chatgpt.com
-              description: ""
-
-    - Entertainment:
-        - Youtube:
-            - icon: youtube.svg
-              href: https://youtube.com
-              description: ""
-        - Soundcloud:
-            - icon: mdi-soundcloud
-              href: https://soundcloud.com
-              description: ""
-    - Communication:
-        - Messenger:
-            - icon: facebook-messenger.svg
-              href: https://messenger.com
-              description: ""
   services.yaml: |
     - Monitoring:
         - Grafana:
             icon: grafana.svg
             href: http://grafana.homelab/login
+        - Headlamp:
+            icon: headlamp.svg
+            href: http://headlamp.homelab
 
     - Network:
         - Pi-hole:
@@ -76,6 +54,31 @@ data:
         - Prowlarr:
             icon: prowlarr.svg
             href: http://prowlarr.homelab:9696
+  bookmarks.yaml: |
+    - Developer:
+        - Github:
+            - icon: github.svg
+              href: https://github.com/lamiphil
+              description: ""
+        - ChatGPT:
+            - icon: chatgpt.svg
+              href: https://chatgpt.com
+              description: ""
+
+    - Entertainment:
+        - Youtube:
+            - icon: youtube.svg
+              href: https://youtube.com
+              description: ""
+        - Soundcloud:
+            - icon: mdi-soundcloud
+              href: https://soundcloud.com
+              description: ""
+    - Communication:
+        - Messenger:
+            - icon: facebook-messenger.svg
+              href: https://messenger.com
+              description: ""
   widgets.yaml: |
     - kubernetes:
         cluster:
