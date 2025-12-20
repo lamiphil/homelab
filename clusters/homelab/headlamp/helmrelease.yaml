@@ -17,10 +17,9 @@ spec:
     config:
       inCluster: true
       baseURL: "/"
+
     service:
       type: LoadBalancer
-      port: 4466
-
 
     serviceAccount:
       create: true
