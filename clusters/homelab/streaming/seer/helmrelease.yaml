@@ -1,0 +1,29 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jellyseerr
+  namespace: streaming
+spec:
+  interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: jellyseerr-chart
+    namespace: streaming
+
+  values:
+    service:
+      main:
+        ports:
+          http:
+            port: 5055
+
+    persistence:
+      config:
+        enabled: true
+        size: 1Gi
+
+    podSecurityContext:
+      fsGroup: 1000
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000

@@ -1,0 +1,18 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: jellyseerr-chart
+  namespace: streaming
+spec:
+  interval: 30m
+  url: oci://ghcr.io/fallenbagel/jellyseerr/jellyseerr-chart
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  # Option A (recommandé): suivre les tags semver
+  ref:
+    semver: "*"
+  # Option B: pinner un tag précis (ex: "2.0.0")
+  # ref:
+  #   tag: "2.0.0"
+
