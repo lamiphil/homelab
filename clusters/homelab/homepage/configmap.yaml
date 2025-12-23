@@ -42,7 +42,7 @@ data:
         - Jellyfin:
             icon: jellyfin.svg
             href: http://jellyfin.homelab:8096
-        - Seer:
+        - Jellyseerr:
             icon: jellyseerr.svg
             href: http://jellyseerr.homelab
         - qUI:
