@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-media-nfs
+spec:
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.0.144
+    path: /srv/media
+  mountOptions:
+    - nfsvers=4.2
+    - noatime
