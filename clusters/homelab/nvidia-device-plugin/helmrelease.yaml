@@ -16,3 +16,8 @@ spec:
   values:
     nodeSelector:
       nvidia.com/gpu.present: "true"
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "transcoding"
+        effect: "NoSchedule"
