@@ -9,4 +9,5 @@ spec:
   resources:
     requests:
       storage: 2Ti
+  storageClassName: nfs-static
   volumeName: jellyfin-media-nfs

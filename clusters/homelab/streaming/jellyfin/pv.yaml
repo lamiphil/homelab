@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: jellyfin-media-nfs
 spec:
+  storageClassName: nfs-static
   capacity:
     storage: 2Ti
   accessModes:
