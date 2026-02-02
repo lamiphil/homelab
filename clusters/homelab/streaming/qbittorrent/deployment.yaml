@@ -15,10 +15,11 @@ spec:
     spec:
       nodeSelector:
         role: streaming
+
       containers:
         # qBittorrent
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:5.1.4-r1-ls431
+          image: lscr.io/linuxserver/qbittorrent:4.6.7
           env:
             - name: PUID
               value: "1000"
@@ -48,7 +49,7 @@ spec:
 
         # VPN (Gluetun)
         - name: gluetun
-          image: qmcgaw/gluetun:latest
+          image: qmcgaw/gluetun:v3.39.1
           securityContext:
             capabilities:
               add: ["NET_ADMIN"]
@@ -59,9 +60,9 @@ spec:
               value: "wireguard"
             # Permets à qbit d’être accessible (UI + ports torrent) à travers le firewall gluetun
             - name: FIREWALL_VPN_INPUT_PORTS
-              value: "8080,6881"
+              value: "8080/tcp,6881/tcp,6881/udp"
             - name: FIREWALL_INPUT_PORTS
-              value: "8080,6881"
+              value: "8080/tcp,6881/tcp,6881/udp"
             - name: DOT
               value: "off"
             # évite les restarts causés par ICMP
@@ -91,6 +92,9 @@ spec:
           hostPath:
             path: /srv/streaming/qbittorrent/config
             type: DirectoryOrCreate
+        - name: qb-bootstrap
+          secret:
+            secretName: qbittorrent-webui-bootstrap
         - name: downloads
           hostPath:
             path: /srv/media/downloads
@@ -99,7 +103,6 @@ spec:
           hostPath:
             path: /srv/streaming/qbittorrent/watch
             type: DirectoryOrCreate
-
         - name: wireguard-config
           secret:
             secretName: qbittorrent-vpn-wg
