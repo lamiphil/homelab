@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent-direct
+  namespace: streaming
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent-direct
+  template:
+    metadata:
+      labels:
+        app: qbittorrent-direct
+    spec:
+      nodeSelector:
+        role: streaming
+      containers:
+      - name: qbittorrent
+        image: lscr.io/linuxserver/qbittorrent:4.6.7
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: America/Toronto
+        - name: WEBUI_PORT
+          value: "8080"
+        ports:
+        - name: webui
+          containerPort: 8080
+        - name: bittorrent
+          containerPort: 6881
+          protocol: TCP
+        - name: bittorrent-udp
+          containerPort: 6881
+          protocol: UDP
+        volumeMounts:
+        - name: qb-config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+      volumes:
+      - name: qb-config
+        hostPath:
+          path: /srv/streaming/qbittorrent-direct/config
+          type: DirectoryOrCreate
+      - name: downloads
+        hostPath:
+          path: /srv/media/downloads
+          type: DirectoryOrCreate
