@@ -19,7 +19,7 @@ spec:
         kubernetes.io/hostname: minipc
       containers:
         - name: postgres
-          image: tensorchord/pgvecto-rs:pg16-v0.4.0
+          image: ghcr.io/immich-app/postgres:16-vectorchord0.4.3-pgvectors0.4.0
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_DB
