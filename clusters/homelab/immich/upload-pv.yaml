@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: immich-upload-nfs
+spec:
+  storageClassName: nfs-static
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.0.144
+    path: /srv/media/immich-upload
+  mountOptions:
+    - nfsvers=4.2
+    - noatime
