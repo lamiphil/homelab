@@ -1,0 +1,122 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: immich-chart
+    namespace: immich
+
+  values:
+    # Shared settings applied to all Immich components
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              tag: v2.0.0
+            env:
+              TZ: "America/Toronto"
+              DB_HOSTNAME: "immich-postgres"
+              DB_PORT: "5432"
+              DB_DATABASE_NAME: "immich"
+              DB_USERNAME: "immich"
+              DB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-db-secret
+                    key: POSTGRES_PASSWORD
+              REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
+              IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+        pod:
+          nodeSelector:
+            kubernetes.io/hostname: minipc
+
+    # Photo library storage
+    immich:
+      persistence:
+        library:
+          existingClaim: immich-library
+
+    # Enable built-in Valkey (Redis) for job queue
+    valkey:
+      enabled: true
+      controllers:
+        main:
+          containers:
+            main:
+              image:
+                repository: docker.io/valkey/valkey
+                tag: 9.0-alpine
+                pullPolicy: IfNotPresent
+          pod:
+            nodeSelector:
+              kubernetes.io/hostname: minipc
+      persistence:
+        data:
+          enabled: true
+          size: 1Gi
+          type: persistentVolumeClaim
+          accessMode: ReadWriteOnce
+
+    # Immich Server (web UI + API)
+    server:
+      enabled: true
+      controllers:
+        main:
+          containers:
+            main:
+              image:
+                repository: ghcr.io/immich-app/immich-server
+                pullPolicy: IfNotPresent
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "256Mi"
+                limits:
+                  cpu: "1000m"
+                  memory: "1Gi"
+          pod:
+            nodeSelector:
+              kubernetes.io/hostname: minipc
+      service:
+        main:
+          type: LoadBalancer
+          loadBalancerIP: "192.168.0.210"
+          ports:
+            http:
+              port: 2283
+
+    # Machine Learning (face recognition, smart search)
+    machine-learning:
+      enabled: true
+      controllers:
+        main:
+          containers:
+            main:
+              image:
+                repository: ghcr.io/immich-app/immich-machine-learning
+                pullPolicy: IfNotPresent
+              env:
+                TRANSFORMERS_CACHE: /cache
+                HF_XET_CACHE: /cache/huggingface-xet
+                MPLCONFIGDIR: /cache/matplotlib-config
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "512Mi"
+                limits:
+                  cpu: "2000m"
+                  memory: "2Gi"
+          pod:
+            nodeSelector:
+              kubernetes.io/hostname: minipc
+      persistence:
+        cache:
+          enabled: true
+          size: 10Gi
+          type: persistentVolumeClaim
+          accessMode: ReadWriteOnce
