@@ -54,6 +54,11 @@ data:
         - Prowlarr:
             icon: prowlarr.svg
             href: http://prowlarr.homelab:9696
+
+    - Media:
+        - Immich:
+            icon: immich.svg
+            href: http://immich.homelab:2283
   bookmarks.yaml: |
     - Developer:
         - Github:
