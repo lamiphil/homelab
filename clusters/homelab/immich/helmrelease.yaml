@@ -39,9 +39,9 @@ spec:
     immich:
       persistence:
         library:
-          existingClaim: immich-library
+          existingClaim: immich-library-local
         upload:
-          existingClaim: immich-upload
+          existingClaim: immich-upload-local
 
     # Enable built-in Valkey (Redis) for job queue
     valkey:
