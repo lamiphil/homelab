@@ -63,4 +63,4 @@ spec:
             type: DirectoryOrCreate
         - name: media
           persistentVolumeClaim:
-            claimName: jellyfin-media
+            claimName: jellyfin-media-vlan
