@@ -19,13 +19,13 @@ spec:
 
     serviceDns:
       type: LoadBalancer
-      loadBalancerIP: 192.168.0.201
+      loadBalancerIP: 192.168.2.22
       annotations:
         metallb.io/allow-shared-ip: "pihole-dns"
 
     serviceWeb:
       type: LoadBalancer
-      loadBalancerIP: 192.168.0.202
+      loadBalancerIP: 192.168.2.23
       annotations: {}
 
     admin:
@@ -36,4 +36,3 @@ spec:
       accessModes:
         - ReadWriteOnce
       size: 1Gi
-

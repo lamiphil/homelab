@@ -10,7 +10,7 @@ spec:
     - ReadOnlyMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: 192.168.0.144
+    server: 192.168.2.11
     path: /srv/media
   mountOptions:
     - nfsvers=4.2

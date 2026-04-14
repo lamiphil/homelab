@@ -5,6 +5,7 @@ metadata:
   namespace: streaming
 spec:
   type: LoadBalancer
+  loadBalancerIP: 192.168.2.50
   selector:
     app: jellyfin
   ports:

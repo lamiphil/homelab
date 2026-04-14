@@ -28,6 +28,9 @@ data:
         - Router:
             icon: mdi-router-network
             href: http://192.168.0.1
+        - UniFi:
+            icon: mdi-access-point-network
+            href: https://unifi/network/default/dashboard
         - Tailscale:
             icon: tailscale.svg
             href: https://login.tailscale.com/admin/machines
