@@ -63,6 +63,11 @@ data:
             icon: immich.svg
             href: http://immich.homelab:2283
   bookmarks.yaml: |
+    - Reading:
+        - TheNewStack:
+            - href: https://thenewstack.io
+        - Lobste.rs:
+            - href: https://lobste.rs/active
     - Developer:
         - Github:
             - icon: github.svg
