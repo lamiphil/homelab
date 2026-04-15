@@ -66,8 +66,10 @@ data:
     - Reading:
         - TheNewStack:
             - href: https://thenewstack.io
+              description: ""
         - Lobste.rs:
             - href: https://lobste.rs/active
+              description: ""
     - Developer:
         - Github:
             - icon: github.svg
