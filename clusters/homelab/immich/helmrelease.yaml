@@ -87,7 +87,7 @@ spec:
       service:
         main:
           type: LoadBalancer
-          loadBalancerIP: "192.168.2.40"
+          loadBalancerIP: "192.168.42.80"
           ports:
             http:
               port: 2283

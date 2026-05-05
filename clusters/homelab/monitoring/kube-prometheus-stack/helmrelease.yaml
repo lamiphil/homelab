@@ -32,7 +32,7 @@ spec:
     grafana:
       service:
         type: LoadBalancer
-        loadBalancerIP: 192.168.2.30
+        loadBalancerIP: 192.168.42.70
       nodeSelector:
         kubernetes.io/hostname: ubuntuserver
       defaultDashboardsTimezone: "America/Montreal"
@@ -48,12 +48,12 @@ spec:
     prometheus:
       service:
         type: LoadBalancer
-        loadBalancerIP: 192.168.2.31
+        loadBalancerIP: 192.168.42.71
 
     alertmanager:
       service:
         type: LoadBalancer
-        loadBalancerIP: 192.168.2.32
+        loadBalancerIP: 192.168.42.72
 
     nodeExporter:
       nodeSelector: {}

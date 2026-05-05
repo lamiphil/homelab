@@ -22,7 +22,7 @@ clusters/homelab/
 ├── headlamp/              # Kubernetes web dashboard (Ingress at headlamp.homelab)
 ├── homepage/              # Landing page / service dashboard (gethomepage)
 ├── immich/                # Self-hosted Google Photos (v2.0.0, PostgreSQL + pgvecto-rs)
-├── metallb-system/        # Bare-metal LoadBalancer (L2 mode, IPs 192.168.2.20-100)
+├── metallb-system/        # Bare-metal LoadBalancer (L2 mode, IPs 192.168.42.60-100)
 ├── monitoring/
 │   ├── kube-prometheus-stack/  # Prometheus + Grafana + Alertmanager
 │   └── loki/                   # Loki (logs) + Alloy (collector DaemonSet)
@@ -44,21 +44,21 @@ clusters/homelab/
 
 | IP | Service |
 |----|---------|
-| 192.168.2.20-100 | MetalLB pool range |
-| .20 | Traefik |
-| .21 | Homepage |
-| .22 | Pi-hole DNS |
-| .23 | Pi-hole Web UI |
-| .30 | Grafana |
-| .31 | Prometheus |
-| .32 | Alertmanager |
-| .40 | Immich |
-| .50 | Jellyfin |
-| .51 | Jellyseerr |
-| .52 | Prowlarr |
-| .53 | qUI |
-| .54 | Radarr |
-| .55 | Sonarr |
+| 192.168.42.60-100 | MetalLB pool range |
+| .60 | Traefik |
+| .61 | Homepage |
+| .62 | Pi-hole DNS |
+| .63 | Pi-hole Web UI |
+| .70 | Grafana |
+| .71 | Prometheus |
+| .72 | Alertmanager |
+| .80 | Immich |
+| .90 | Jellyfin |
+| .91 | Jellyseerr |
+| .92 | Prowlarr |
+| .93 | qUI |
+| .94 | Radarr |
+| .95 | Sonarr |
 
 ## Node Topology
 
@@ -69,7 +69,7 @@ clusters/homelab/
 | GPU node (label: `nvidia.com/gpu.present=true`, taint: `dedicated=transcoding`) | Jellyfin (NVIDIA GPU transcoding) |
 | Streaming node (label: `role=streaming`) | qBittorrent, Radarr, Sonarr, Prowlarr, FlareSolverr |
 
-## NFS Storage (server: 192.168.2.11)
+## NFS Storage (server: 192.168.42.11)
 
 | NFS Path | PV | Access | Used By |
 |----------|----|--------|---------|
