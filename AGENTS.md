@@ -18,6 +18,7 @@ GitHub repo --> Flux GitRepository (polls every 1m)
 
 ```
 clusters/homelab/
+├── filebrowser/           # Browser-based file manager for /srv/media (LoadBalancer at filebrowser.homelab)
 ├── flux-system/           # Flux CD bootstrap (auto-generated, do not manually edit gotk-components.yaml)
 ├── headlamp/              # Kubernetes web dashboard (Ingress at headlamp.homelab)
 ├── homepage/              # Landing page / service dashboard (gethomepage)
@@ -59,13 +60,25 @@ clusters/homelab/
 | .93 | qUI |
 | .94 | Radarr |
 | .95 | Sonarr |
+| .96 | File Browser |
+
+## Network Setup
+
+- **Primary homelab VLAN/subnet**: `192.168.42.0/24`.
+- **MetalLB mode**: L2 advertisement using `default-pool` (`192.168.42.60-192.168.42.100`).
+- **Traefik entrypoint**: k3s-managed Traefik is pinned to `192.168.42.60` via `HelmChartConfig`.
+- **Local DNS**: Pi-hole is exposed at `192.168.42.62` for DNS and `192.168.42.63` for the web UI. `.homelab` hostnames are used throughout Homepage and Ingresses; DNS records are expected to live outside this repo, likely in Pi-hole/local DNS.
+- **Kubernetes network CIDRs**: pod CIDR appears to be `10.42.0.0/16`, service CIDR `10.43.0.0/16` (referenced in the Gluetun firewall allowlist).
+- **LAN access from VPN sidecars**: qBittorrent/Gluetun allows outbound access to `10.42.0.0/16`, `10.43.0.0/16`, and `192.168.42.0/24`.
+- **External/network tools referenced**: router at `192.168.0.1`, UniFi controller bookmark, Tailscale admin bookmark, ProtonVPN for qBittorrent WireGuard.
+- **Exposure pattern**: most services use MetalLB `LoadBalancer` IPs directly; Headlamp uses an Ingress at `headlamp.homelab` through Traefik.
 
 ## Node Topology
 
 | Node | Role / Workloads |
 |------|-----------------|
 | `ubuntuserver` | Grafana |
-| `minipc` | Immich (server, ML, Valkey, PostgreSQL) |
+| `minipc` | Immich (server, ML, Valkey, PostgreSQL), File Browser |
 | GPU node (label: `nvidia.com/gpu.present=true`, taint: `dedicated=transcoding`) | Jellyfin (NVIDIA GPU transcoding) |
 | Streaming node (label: `role=streaming`) | qBittorrent, Radarr, Sonarr, Prowlarr, FlareSolverr |
 
@@ -74,9 +87,10 @@ clusters/homelab/
 | NFS Path | PV | Access | Used By |
 |----------|----|--------|---------|
 | `/srv/media` | media-pv (2Ti) | ReadOnlyMany | Jellyfin |
+| `/srv/media` | filebrowser-media (2Ti) | ReadWriteMany | File Browser |
 | `/srv/media/photos` | library-pv (2Ti) | ReadWriteMany | Immich |
 
-HostPath storage: `/srv/streaming/*/config` for app configs, `/srv/media/downloads` for torrent downloads.
+HostPath storage: `/srv/streaming/*/config` for app configs, `/srv/media/downloads` for torrent downloads, `/srv/filebrowser/{database,config}` for File Browser app state on `minipc`.
 
 ## Media Automation Pipeline
 

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser
+  namespace: filebrowser
+  labels:
+    app.kubernetes.io/name: filebrowser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: filebrowser
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: filebrowser
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: minipc
+      containers:
+        - name: filebrowser
+          image: filebrowser/filebrowser:s6
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/Toronto"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: media
+              mountPath: /srv
+            - name: database
+              mountPath: /database
+            - name: config
+              mountPath: /config
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: filebrowser-media
+        - name: database
+          hostPath:
+            path: /srv/filebrowser/database
+            type: DirectoryOrCreate
+        - name: config
+          hostPath:
+            path: /srv/filebrowser/config
+            type: DirectoryOrCreate

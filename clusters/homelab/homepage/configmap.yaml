@@ -62,6 +62,9 @@ data:
         - Immich:
             icon: immich.svg
             href: http://immich.homelab:2283
+        - File Browser:
+            icon: filebrowser.svg
+            href: http://filebrowser.homelab
   bookmarks.yaml: |
     - Reading:
         - TheNewStack:

@@ -10,14 +10,21 @@ spec:
     name: jellyseerr-chart
     namespace: streaming
 
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: jellyseerr-jellyseerr-chart
+            patch: |-
+              - op: add
+                path: /spec/loadBalancerIP
+                value: 192.168.42.91
+
   values:
     service:
-      main:
-        type: LoadBalancer
-        loadBalancerIP: 192.168.42.91
-        ports:
-          http:
-            port: 5055
+      type: LoadBalancer
+      port: 80
 
     persistence:
       config:
