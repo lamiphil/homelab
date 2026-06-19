@@ -1,12 +1,9 @@
 <mxfile host="drawio.homelab">
   <diagram id="homelab-high-level" name="Homelab High Level">
-    <mxGraphModel dx="2694" dy="2391" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
+    <mxGraphModel dx="3170" dy="2701" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=26;fontStyle=1;fontColor=#111827;" value="Homelab high-level architecture" vertex="1">
-          <mxGeometry height="30" width="430" x="400" y="-280" as="geometry" />
-        </mxCell>
         <mxCell id="3" parent="1" style="swimlane;startSize=34;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#f9fafb;strokeColor=#9ca3af;fontColor=#111827;" value="External access" vertex="1">
           <mxGeometry height="300" width="620" x="820" y="-280" as="geometry" />
         </mxCell>
@@ -141,27 +138,6 @@
         </mxCell>
         <mxCell id="104" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2563eb;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="20" value="routes / DNS">
           <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="80" parent="1" style="swimlane;startSize=28;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#faf5ff;strokeColor=#c084fc;fontColor=#111827;" value="Notes" vertex="1">
-          <mxGeometry height="290" width="1250" x="1500" y="-80" as="geometry" />
-        </mxCell>
-        <mxCell id="81" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="DNS authority: UDM serves *.homelab locally and over WireGuard" vertex="1">
-          <mxGeometry height="50" width="390" x="20" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="82" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Traffic path: Phone/Laptop → Cloudflare DDNS → UDM WireGuard → Homelab VLAN" vertex="1">
-          <mxGeometry height="50" width="430" x="20" y="100" as="geometry" />
-        </mxCell>
-        <mxCell id="83" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Flux GitOps lives on ubuntuserver and reconciles this repo into the cluster" vertex="1">
-          <mxGeometry height="50" width="350" x="480" y="40" as="geometry" />
-        </mxCell>
-        <mxCell id="84" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Main exposed IPs: Traefik .60, Homepage .61, Grafana .70, Prometheus .71, Alertmanager .72, Immich .80, Jellyfin .90" vertex="1">
-          <mxGeometry height="60" width="560" x="20" y="160" as="geometry" />
-        </mxCell>
-        <mxCell id="85" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Streaming workloads are concentrated on minipc; GPU transcoding runs on archlinux" vertex="1">
-          <mxGeometry height="60" width="400" x="480" y="90" as="geometry" />
-        </mxCell>
-        <mxCell id="86" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Raspberry Pi provides extra worker capacity and observability coverage; datavault is a new node currently in the cluster" vertex="1">
-          <mxGeometry height="80" width="210" x="610" y="160" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
