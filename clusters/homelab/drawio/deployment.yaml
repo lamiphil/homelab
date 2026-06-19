@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drawio
+  namespace: drawio
+  labels:
+    app.kubernetes.io/name: drawio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: drawio
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: drawio
+    spec:
+      containers:
+        - name: drawio
+          image: jgraph/drawio:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "America/Toronto"
+            - name: DRAWIO_SERVER_URL
+              value: "http://drawio.homelab/"
+            - name: DRAWIO_SELF_CONTAINED
+              value: "1"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"

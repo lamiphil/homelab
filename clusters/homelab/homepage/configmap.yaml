@@ -62,6 +62,9 @@ data:
         - Immich:
             icon: immich.svg
             href: http://immich.homelab:2283
+        - draw.io:
+            icon: mdi-vector-polyline
+            href: http://drawio.homelab:8080
         - File Browser:
             icon: filebrowser.svg
             href: http://filebrowser.homelab

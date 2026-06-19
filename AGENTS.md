@@ -18,6 +18,7 @@ GitHub repo --> Flux GitRepository (polls every 1m)
 
 ```
 clusters/homelab/
+├── drawio/                # Self-hosted draw.io / diagrams.net (LoadBalancer at drawio.homelab)
 ├── filebrowser/           # Browser-based file manager for /srv/media (LoadBalancer at filebrowser.homelab)
 ├── flux-system/           # Flux CD bootstrap (auto-generated, do not manually edit gotk-components.yaml)
 ├── headlamp/              # Kubernetes web dashboard (Ingress at headlamp.homelab)
@@ -61,6 +62,7 @@ clusters/homelab/
 | .94 | Radarr |
 | .95 | Sonarr |
 | .96 | File Browser |
+| .97 | draw.io |
 
 ## Network Setup
 
