@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">Homelab high-level architecture</title>
+  <desc id="desc">High-level homelab architecture showing Cloudflare DDNS, UniFi UDM, WireGuard VPN, home and homelab VLANs, and the five Kubernetes nodes.</desc>
+  <defs>
+    <style>
+      .bg{fill:#0b1020}.panel{fill:#121a2b;stroke:#334155;stroke-width:2}.lane{fill:#0f172a;stroke:#475569;stroke-width:2}.greenlane{fill:#0b1b12;stroke:#22c55e;stroke-width:2}.box{fill:#172033;stroke:#64748b;stroke-width:2}.blue{fill:#14253f;stroke:#60a5fa}.green{fill:#0e2a16;stroke:#22c55e}.purple{fill:#23133b;stroke:#a78bfa}.orange{fill:#31200d;stroke:#f59e0b}.red{fill:#341718;stroke:#f87171}.yellow{fill:#33260e;stroke:#fbbf24}.text{font-family:Inter,Arial,sans-serif;fill:#f8fafc}.muted{font-family:Inter,Arial,sans-serif;fill:#cbd5e1}.dim{font-family:Inter,Arial,sans-serif;fill:#94a3b8}.t1{font-size:42px;font-weight:800}.t2{font-size:28px;font-weight:800}.t3{font-size:21px;font-weight:700}.s{font-size:17px}.xs{font-size:15px}.line{fill:none;stroke:#94a3b8;stroke-width:3;marker-end:url(#arrow)}.lineb{stroke:#60a5fa}.lineg{stroke:#22c55e}.linep{stroke:#a78bfa}.lineo{stroke:#f59e0b}.dash{stroke-dasharray:8 8}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+  </defs>
+
+  <rect class="bg" width="1600" height="980"/>
+  <text x="50" y="60" class="text t1">Homelab high-level architecture</text>
+  <text x="50" y="96" class="muted s">k3s + Flux CD + UniFi UDM + WireGuard + Cloudflare DDNS</text>
+
+  <rect x="40" y="130" width="430" height="200" rx="24" class="lane"/>
+  <text x="70" y="175" class="text t2">External access</text>
+  <rect x="70" y="210" width="120" height="64" rx="16" class="box"/>
+  <text x="98" y="248" class="text t3">Internet</text>
+  <rect x="225" y="210" width="160" height="64" rx="16" class="orange"/>
+  <text x="247" y="248" class="text t3">Cloudflare DDNS</text>
+  <rect x="70" y="290" width="145" height="64" rx="16" class="blue"/>
+  <text x="91" y="328" class="text t3">Phone / Laptop</text>
+  <rect x="245" y="290" width="140" height="64" rx="16" class="purple"/>
+  <text x="268" y="328" class="text t3">WireGuard</text>
+
+  <rect x="520" y="130" width="1030" height="200" rx="24" class="lane"/>
+  <text x="550" y="175" class="text t2">Network edge</text>
+  <rect x="550" y="210" width="200" height="70" rx="16" class="blue"/>
+  <text x="601" y="245" class="text t3">UniFi UDM</text>
+  <text x="577" y="268" class="muted xs">Gateway + local DNS</text>
+  <rect x="780" y="210" width="220" height="70" rx="16" class="purple"/>
+  <text x="831" y="245" class="text t3">WireGuard VPN</text>
+  <text x="807" y="268" class="muted xs">VPN subnet: 192.168.69.0/24</text>
+  <rect x="1040" y="210" width="200" height="70" rx="16" class="box"/>
+  <text x="1066" y="245" class="text t3">Home / client VLAN</text>
+  <text x="1088" y="268" class="muted xs">192.168.0.0/24</text>
+  <rect x="1280" y="210" width="220" height="70" rx="16" class="green"/>
+  <text x="1322" y="245" class="text t3">Homelab VLAN</text>
+  <text x="1334" y="268" class="muted xs">192.168.42.0/24</text>
+
+  <rect x="40" y="380" width="1510" height="540" rx="28" class="greenlane"/>
+  <text x="70" y="425" class="text t2">Cluster + services on homelab VLAN</text>
+
+  <rect x="70" y="455" width="270" height="150" rx="20" class="lane"/>
+  <text x="95" y="490" class="text t3">Exposure</text>
+  <rect x="95" y="515" width="105" height="58" rx="14" class="blue"/>
+  <text x="117" y="548" class="text s">Traefik</text>
+  <text x="110" y="567" class="dim xs">192.168.42.60</text>
+  <rect x="215" y="515" width="100" height="58" rx="14" class="green"/>
+  <text x="231" y="548" class="text s">MetalLB</text>
+  <text x="227" y="567" class="dim xs">.60 - .100</text>
+
+  <rect x="380" y="455" width="220" height="240" rx="20" class="blue"/>
+  <text x="410" y="490" class="text t3">ubuntuserver</text>
+  <text x="412" y="512" class="muted xs">192.168.42.10 · control-plane</text>
+  <text x="410" y="550" class="text s">Flux CD</text>
+  <text x="410" y="580" class="text s">Traefik</text>
+  <text x="410" y="610" class="text s">Grafana / Prometheus</text>
+  <text x="410" y="640" class="text s">Alertmanager / Pi-hole</text>
+
+  <rect x="630" y="455" width="300" height="300" rx="20" class="green"/>
+  <text x="660" y="490" class="text t3">minipc</text>
+  <text x="662" y="512" class="muted xs">192.168.42.11 · worker · role=streaming</text>
+  <text x="660" y="550" class="text s">Immich / File Browser</text>
+  <text x="660" y="580" class="text s">Jellyseerr / Radarr / Sonarr</text>
+  <text x="660" y="610" class="text s">Prowlarr / FlareSolverr</text>
+  <text x="660" y="640" class="text s">qBittorrent + Gluetun</text>
+  <text x="660" y="670" class="text s">NFS: /srv/media, /srv/media/photos</text>
+
+  <rect x="970" y="455" width="240" height="220" rx="20" class="red"/>
+  <text x="1000" y="490" class="text t3">archlinux</text>
+  <text x="1000" y="512" class="muted xs">192.168.42.13 · transcoding worker</text>
+  <text x="1000" y="550" class="text s">Jellyfin</text>
+  <text x="1000" y="580" class="text s">NVIDIA device plugin</text>
+  <text x="1000" y="610" class="text s">GPU node</text>
+
+  <rect x="1250" y="455" width="180" height="180" rx="20" class="yellow"/>
+  <text x="1280" y="490" class="text t3">pi</text>
+  <text x="1278" y="512" class="muted xs">192.168.42.12 · ARM64 worker</text>
+  <text x="1280" y="550" class="text s">Grafana Alloy</text>
+  <text x="1280" y="580" class="text s">Node exporter</text>
+
+  <rect x="970" y="705" width="240" height="150" rx="20" class="purple"/>
+  <text x="1000" y="740" class="text t3">datavault</text>
+  <text x="1000" y="762" class="muted xs">192.168.42.14</text>
+  <text x="1000" y="800" class="text s">New node / future</text>
+  <text x="1000" y="826" class="text s">workloads</text>
+
+  <rect x="70" y="640" width="840" height="215" rx="20" class="lane"/>
+  <text x="95" y="675" class="text t3">Key paths</text>
+  <text x="95" y="720" class="muted s">Remote access: Phone/Laptop → Cloudflare DDNS → UDM WireGuard → Homelab VLAN</text>
+  <text x="95" y="760" class="muted s">DNS: UDM resolves *.homelab locally and over VPN</text>
+  <text x="95" y="800" class="muted s">Main service IPs: .60 Traefik · .61 Homepage · .70 Grafana · .80 Immich · .90 Jellyfin</text>
+
+  <path d="M190 242 H225" class="line lineo"/>
+  <path d="M385 242 H550" class="line lineo"/>
+  <path d="M315 290 C315 250 360 245 550 245" class="line linep dash"/>
+  <path d="M145 290 C145 240 1040 240 1040 245" class="line lineb"/>
+  <path d="M1000 245 H1040" class="line linep"/>
+  <path d="M750 245 H780" class="line linep"/>
+  <path d="M750 260 C1160 260 1160 245 1280 245" class="line lineg"/>
+  <path d="M1390 280 V380" class="line lineg"/>
+  <path d="M150 573 V760 H380" class="line lineb"/>
+  <path d="M265 573 V785 H630" class="line lineg"/>
+  <path d="M930 670 H970" class="line lineg"/>
+
+  <text x="70" y="952" class="dim xs">Source: docs/homelab-high-level-architecture.drawio</text>
+</svg>

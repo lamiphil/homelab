@@ -1,0 +1,169 @@
+<mxfile host="drawio.homelab">
+  <diagram id="homelab-high-level" name="Homelab High Level">
+    <mxGraphModel dx="2694" dy="2391" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=26;fontStyle=1;fontColor=#111827;" value="Homelab high-level architecture" vertex="1">
+          <mxGeometry height="30" width="430" x="400" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="swimlane;startSize=34;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#f9fafb;strokeColor=#9ca3af;fontColor=#111827;" value="External access" vertex="1">
+          <mxGeometry height="300" width="620" x="820" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#f59e0b;fontColor=#111827;" value="Cloudflare DDNS" vertex="1">
+          <mxGeometry height="70" width="150" x="235" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="3" style="rounded=1;whiteSpace=wrap;html=1;" value="Phone / Laptop" vertex="1">
+          <mxGeometry height="60" width="110" x="70" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" value="WireGuard client" vertex="1">
+          <mxGeometry height="60" width="140" x="445" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="dIsCAjJ-d8lPn3dmqnBG-109" edge="1" parent="3" source="dIsCAjJ-d8lPn3dmqnBG-108" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dIsCAjJ-d8lPn3dmqnBG-108" parent="3" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" value="Internet" vertex="1">
+          <mxGeometry height="80" width="120" x="250" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="swimlane;startSize=34;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#eff6ff;strokeColor=#60a5fa;fontColor=#111827;" value="Network edge" vertex="1">
+          <mxGeometry height="230" width="620" x="820" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bfdbfe;strokeColor=#2563eb;fontColor=#111827;fontStyle=1;" value="UniFi UDM&#xa;Gateway + local DNS" vertex="1">
+          <mxGeometry height="80" width="180" x="220" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" value="WireGuard VPN&#xa;Subnet: 192.168.69.0/24" vertex="1">
+          <mxGeometry height="80" width="170" x="430" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="10" style="rounded=1;whiteSpace=wrap;html=1;" value="Home / client network&#xa;192.168.0.0/24" vertex="1">
+          <mxGeometry height="60" width="170" x="40" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="swimlane;startSize=36;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#f0fdf4;strokeColor=#22c55e;fontColor=#111827;" value="Homelab VLAN 192.168.42.0/24" vertex="1">
+          <mxGeometry height="630" width="1650" x="305" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="21" parent="20" style="swimlane;startSize=28;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#ecfeff;strokeColor=#06b6d4;fontColor=#111827;" value="Ingress / service exposure" vertex="1">
+          <mxGeometry height="170" width="300" x="30" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="22" parent="21" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cffafe;strokeColor=#0891b2;fontColor=#111827;" value="Traefik&#xa;LB IP: 192.168.42.60" vertex="1">
+          <mxGeometry height="70" width="120" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="23" parent="21" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ccfbf1;strokeColor=#0f766e;fontColor=#111827;" value="MetalLB L2 pool&#xa;192.168.42.60-100" vertex="1">
+          <mxGeometry height="70" width="120" x="160" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="30" parent="20" style="swimlane;startSize=54;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#111827;" value="ubuntuserver&#xa;192.168.42.10&#xa;control-plane" vertex="1">
+          <mxGeometry height="240" width="240" x="375" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="31" parent="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#60a5fa;fontColor=#111827;" value="Flux CD controllers" vertex="1">
+          <mxGeometry height="40" width="200" x="20" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="32" parent="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#60a5fa;fontColor=#111827;" value="Traefik" vertex="1">
+          <mxGeometry height="40" width="200" x="20" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="33" parent="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#60a5fa;fontColor=#111827;" value="Monitoring&#xa;Grafana / Prometheus / Alertmanager" vertex="1">
+          <mxGeometry height="50" width="200" x="20" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="40" parent="20" style="swimlane;startSize=54;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#111827;" value="minipc&#xa;192.168.42.11&#xa;worker + role=streaming" vertex="1">
+          <mxGeometry height="300" width="300" x="635" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="41" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="Immich" vertex="1">
+          <mxGeometry height="40" width="120" x="20" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="42" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="File Browser" vertex="1">
+          <mxGeometry height="40" width="120" x="160" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="43" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="Jellyseerr" vertex="1">
+          <mxGeometry height="40" width="120" x="20" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="44" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="Radarr / Sonarr" vertex="1">
+          <mxGeometry height="40" width="120" x="160" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="45" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="Prowlarr + FlareSolverr" vertex="1">
+          <mxGeometry height="50" width="120" x="20" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="46" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="qBittorrent + Gluetun" vertex="1">
+          <mxGeometry height="50" width="120" x="160" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="47" parent="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4ade80;fontColor=#111827;" value="NFS storage&#xa;/srv/media + /srv/media/photos" vertex="1">
+          <mxGeometry height="50" width="260" x="20" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="50" parent="20" style="swimlane;startSize=54;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#fee2e2;strokeColor=#ef4444;fontColor=#111827;" value="archlinux&#xa;192.168.42.13&#xa;transcoding worker" vertex="1">
+          <mxGeometry height="220" width="240" x="985" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="51" parent="50" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f87171;fontColor=#111827;" value="Jellyfin" vertex="1">
+          <mxGeometry height="40" width="200" x="20" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="52" parent="50" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f87171;fontColor=#111827;" value="NVIDIA device plugin" vertex="1">
+          <mxGeometry height="40" width="200" x="20" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="53" parent="50" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f87171;fontColor=#111827;" value="GPU node&#xa;nvidia.com/gpu.present=true" vertex="1">
+          <mxGeometry height="40" width="200" x="20" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="60" parent="20" style="swimlane;startSize=54;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontColor=#111827;" value="pi&#xa;192.168.42.12&#xa;ARM64 worker" vertex="1">
+          <mxGeometry height="180" width="200" x="1245" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="61" parent="60" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fbbf24;fontColor=#111827;" value="Grafana Alloy" vertex="1">
+          <mxGeometry height="40" width="160" x="20" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="62" parent="60" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fbbf24;fontColor=#111827;" value="Node exporter" vertex="1">
+          <mxGeometry height="40" width="160" x="20" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="70" parent="20" style="swimlane;startSize=54;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#ede9fe;strokeColor=#8b5cf6;fontColor=#111827;" value="datavault&#xa;192.168.42.14" vertex="1">
+          <mxGeometry height="140" width="150" x="1465" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="71" parent="70" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#a78bfa;fontColor=#111827;" value="New node / future workloads" vertex="1">
+          <mxGeometry height="45" width="120" x="15" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="105" edge="1" parent="20" source="23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#0f766e;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="30" value="announces service IPs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="495" y="125" />
+            </Array>
+            <mxPoint x="495" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="106" edge="1" parent="20" source="22" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#0891b2;exitX=0.5;exitY=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="30" value="ingress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="107" edge="1" parent="20" source="47" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeColor=#16a34a;exitX=1;exitY=0.5;entryX=0;entryY=0.5;startArrow=classic;startFill=1;endFill=0;" target="51" value="NFS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="101" edge="1" parent="1" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#f59e0b;exitX=0.5;exitY=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" target="11" value="updates endpoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="102" edge="1" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#3b82f6;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" target="13" value="home Wi-Fi / LAN">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="103" edge="1" parent="1" source="7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#ae4132;exitX=0.5;exitY=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;fillColor=#fad9d5;" target="12" value="VPN tunnel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="104" edge="1" parent="1" source="11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2563eb;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="20" value="routes / DNS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="80" parent="1" style="swimlane;startSize=28;rounded=1;html=1;container=1;collapsible=0;horizontal=1;fillColor=#faf5ff;strokeColor=#c084fc;fontColor=#111827;" value="Notes" vertex="1">
+          <mxGeometry height="290" width="1250" x="1500" y="-80" as="geometry" />
+        </mxCell>
+        <mxCell id="81" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="DNS authority: UDM serves *.homelab locally and over WireGuard" vertex="1">
+          <mxGeometry height="50" width="390" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="82" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Traffic path: Phone/Laptop → Cloudflare DDNS → UDM WireGuard → Homelab VLAN" vertex="1">
+          <mxGeometry height="50" width="430" x="20" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="83" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Flux GitOps lives on ubuntuserver and reconciles this repo into the cluster" vertex="1">
+          <mxGeometry height="50" width="350" x="480" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="84" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Main exposed IPs: Traefik .60, Homepage .61, Grafana .70, Prometheus .71, Alertmanager .72, Immich .80, Jellyfin .90" vertex="1">
+          <mxGeometry height="60" width="560" x="20" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="85" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Streaming workloads are concentrated on minipc; GPU transcoding runs on archlinux" vertex="1">
+          <mxGeometry height="60" width="400" x="480" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="86" parent="80" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d8b4fe;fontColor=#111827;" value="Raspberry Pi provides extra worker capacity and observability coverage; datavault is a new node currently in the cluster" vertex="1">
+          <mxGeometry height="80" width="210" x="610" y="160" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
