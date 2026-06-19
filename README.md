@@ -6,8 +6,6 @@ GitOps-powered home Kubernetes cluster built with k3s, Flux CD, SOPS/age, MetalL
 
 ![Homelab high-level architecture](docs/homelab-high-level-architecture.svg)
 
-Editable source: [`docs/homelab-high-level-architecture.drawio`](docs/homelab-high-level-architecture.drawio)
-
 ## Highlights
 
 - **Network edge**: UniFi UDM, WireGuard VPN, Cloudflare DDNS
