@@ -119,6 +119,13 @@ K8s metrics --> Prometheus (kube-prometheus-stack) --> Grafana + Alertmanager
 - Flux decrypts in-cluster using `sops-age` Secret in `flux-system` namespace.
 - Encrypted secrets: `immich-db-secret.sops.yaml`, `qbittorrent-vpn-wg-secret.sops.yaml`
 
+## Work Log
+
+- `_log.md` at the repository root is the canonical journal for all homelab work.
+- Log every investigation, decision, configuration change, live-cluster operation, and other progress or action related to the homelab, including work that does not change files in this repository.
+- Add each update to `_log.md` as a concise timestamped entry under the appropriate date heading; keep the newest date sections first and never remove previous entries.
+- Never include secrets, credentials, tokens, or decrypted SOPS values in the log.
+
 ## Patterns and Conventions
 
 - **Helm vs Raw**: Helm (HelmRelease) for complex upstream charts; raw K8s manifests for simpler single-container apps.
