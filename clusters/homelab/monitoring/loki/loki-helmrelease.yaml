@@ -34,7 +34,7 @@ spec:
         type: filesystem
 
     singleBinary:
-      replicas: 1
+      replicas: 0
       persistence:
         enabled: true
         size: 20Gi
