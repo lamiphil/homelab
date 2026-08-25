@@ -19,6 +19,8 @@ spec:
 
     loki:
       auth_enabled: false
+      storage:
+        type: filesystem
 
     singleBinary:
       replicas: 1
