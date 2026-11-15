@@ -5,6 +5,38 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-15 - Simplification des services
+
+**2026-11-15 | 17:31**
+
+Le démarrage de `magos` a restauré le quorum etcd et l'API Kubernetes.
+
+- `magos` est redevenu joignable à `192.168.42.15`; etcd a commencé à écouter sur le port 2380 après environ 25 secondes.
+- `ubuntuserver` a été élu leader etcd au terme 7.
+- L'API a retrouvé l'état `Ready` environ 15 secondes plus tard.
+- `magos`, `minipc`, `datavault`, `pi` et `ubuntuserver` sont `Ready`; `archlinux` est `NotReady`.
+
+**2026-11-15 | 17:27**
+
+J'ai identifié la cause de la réponse `ServiceUnavailable` de l'API Kubernetes.
+
+- Le cluster etcd contient deux voters: `ubuntuserver` (`192.168.42.10`) et `magos` (`192.168.42.15`).
+- `magos` est inaccessible depuis le poste local et depuis `ubuntuserver`; la résolution ARP échoue et etcd reçoit `no route to host` sur le port 2380.
+- Avec un membre sur deux hors ligne, etcd perd son quorum et ne peut élire de leader.
+- k3s reste en état `activating` sur `ubuntuserver` et retourne `503 runtime core not ready`.
+- Le disque et la mémoire de `ubuntuserver` ne sont pas saturés.
+
+**2026-11-15 | 17:20**
+
+J'ai retiré de l'état GitOps Pi-hole, Headlamp, draw.io, la pile de streaming, les clients qBittorrent et leur VPN, Loki, Alloy et la prise en charge NVIDIA.
+
+- Retiré aussi qUI, devenu inutile sans qBittorrent, ainsi que le namespace `streaming`.
+- Nettoyé les liens Homepage et la source de données Loki dans Grafana.
+- Conservé les données locales sous `/srv`; seuls les manifests Kubernetes ont été retirés.
+- Mis à jour la documentation avec la cible `magos`, `minipc` et `datavault`.
+- Le cluster n'a pas été modifié directement; Flux supprimera les ressources après commit et réconciliation.
+- La validation en direct reste bloquée par une réponse `ServiceUnavailable` de l'API Kubernetes.
+
 ## 2026-08-24 - Exploration du cluster et ajout de magos
 
 **2026-08-24 | 11:42**

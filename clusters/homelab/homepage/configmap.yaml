@@ -17,14 +17,8 @@ data:
         - Grafana:
             icon: grafana.svg
             href: http://grafana.homelab/login
-        - Headlamp:
-            icon: headlamp.svg
-            href: http://headlamp.homelab
 
     - Network:
-        - Pi-hole:
-            icon: pi-hole.svg
-            href: http://pihole.homelab/admin
         - Router:
             icon: mdi-router-network
             href: http://192.168.0.1
@@ -38,33 +32,10 @@ data:
             icon: proton-vpn.svg
             href: https://account.proton.me/u/2/vpn/dashboardV2
 
-    - Streaming:
-        - Jellyfin:
-            icon: jellyfin.svg
-            href: http://jellyfin.homelab:8096
-        - Jellyseerr:
-            icon: jellyseerr.svg
-            href: http://jellyseerr.homelab
-        - qUI:
-            icon: qui.svg
-            href: http://qui.homelab:7476
-        - Radarr:
-            icon: radarr.svg
-            href: http://radarr.homelab:7878
-        - Sonarr:
-            icon: sonarr.svg
-            href: http://sonarr.homelab:8989
-        - Prowlarr:
-            icon: prowlarr.svg
-            href: http://prowlarr.homelab:9696
-
     - Media:
         - Immich:
             icon: immich.svg
             href: http://immich.homelab:2283
-        - draw.io:
-            icon: mdi-vector-polyline
-            href: http://drawio.homelab:8080
         - File Browser:
             icon: filebrowser.svg
             href: http://filebrowser.homelab
