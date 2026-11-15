@@ -7,6 +7,16 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-15 - Simplification des services
 
+**2026-11-15 | 17:59**
+
+Le redémarrage de `minipc` a restauré son état `Ready`.
+
+- Le déploiement Helm de kube-prometheus-stack restait bloqué par un ancien pod node-exporter du Pi dont le sandbox containerd était réservé.
+- Supprimé ce pod; le DaemonSet l'a recréé sainement et les six node-exporters sont devenus disponibles.
+- La mise à niveau Helm a ensuite réussi.
+- Grafana n'est plus attaché à `ubuntuserver` et tourne maintenant sur `minipc`.
+- L'API Kubernetes est `Ready`; `archlinux` est de nouveau `NotReady` et sera retiré selon la topologie cible.
+
 **2026-11-15 | 17:49**
 
 J'ai préparé `magos` à exécuter les workloads avant le retrait de `ubuntuserver`.
