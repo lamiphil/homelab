@@ -7,6 +7,16 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-15 - Simplification des services
 
+**2026-11-15 | 17:49**
+
+J'ai préparé `magos` à exécuter les workloads avant le retrait de `ubuntuserver`.
+
+- Le redémarrage de `magos` a d'abord échoué parce qu'une entrée vide était restée sous `node-taint` dans sa configuration k3s; la correction manuelle a restauré etcd et l'API.
+- Retiré la taint `node-role.kubernetes.io/control-plane=true:NoSchedule` du Node `magos` en direct.
+- Retiré le `nodeSelector` Grafana qui l'attachait à `ubuntuserver`.
+- Flux a appliqué la révision `2dc7682`; les workloads retirés sont en cours de suppression.
+- `minipc` (`192.168.42.11`) est hors ligne et inaccessible; son kubelet ne publie plus son état. Il doit revenir `Ready` avant le retrait du control-plane actuel.
+
 **2026-11-15 | 17:31**
 
 Le démarrage de `magos` a restauré le quorum etcd et l'API Kubernetes.

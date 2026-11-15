@@ -33,8 +33,6 @@ spec:
       service:
         type: LoadBalancer
         loadBalancerIP: 192.168.42.70
-      nodeSelector:
-        kubernetes.io/hostname: ubuntuserver
       defaultDashboardsTimezone: "America/Montreal"
       adminUser: "lamiphil"
 
