@@ -7,6 +7,17 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-15 - Simplification des services
 
+**2026-11-15 | 18:14**
+
+J'ai analysé l'indisponibilité de `minipc` après avoir obtenu un accès SSH.
+
+- Le redémarrage précédent n'était pas propre: aucun arrêt n'est enregistré et systemd-journald a remplacé un journal corrompu au démarrage.
+- Les derniers logs conservés, datés du 25 septembre, montrent que k3s-agent ne pouvait plus joindre `192.168.42.10:6443` (`no route to host`) et ne pouvait plus publier l'état du Node.
+- Les logs s'arrêtent ensuite brutalement; ils ne permettent pas de distinguer une panne d'alimentation d'un gel complet de l'hôte.
+- `minipc` utilise uniquement le Wi-Fi via une ancienne carte Intel 7260; un test de 20 paquets n'a perdu aucun paquet, mais la latence variait de 0,6 à 299 ms avec une moyenne de 107 ms. L'interface Ethernet est inactive.
+- Cinq erreurs `Too many open files` affectaient `systemd-networkd-wait-online` les 26 et 27 août. Elles indiquent une ancienne pression sur les descripteurs, sans preuve qu'elle a causé l'arrêt final.
+- Après redémarrage, k3s-agent, la mémoire, le disque, les températures et les unités systemd sont sains.
+
 **2026-11-15 | 18:05**
 
 J'ai débloqué la suppression des namespaces retirés.
