@@ -7,6 +7,16 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-15 - Simplification des services
 
+**2026-11-15 | 18:05**
+
+J'ai débloqué la suppression des namespaces retirés.
+
+- `pihole` était retenu par trois finalizers MetalLB `service.kubernetes.io/load-balancer-cleanup` datant d'anciennes suppressions; retiré ces finalizers des Services déjà en cours de suppression.
+- `streaming` et `nvidia-device-plugin` étaient retenus par les pods Jellyfin et NVIDIA sur `archlinux`, dont le kubelet est indisponible; supprimé de force ces deux objets Pod.
+- Le PV Jellyfin utilisait la politique `Retain` et le partage NFS `192.168.42.11:/srv/media`; Kubernetes n'a donc pas demandé la suppression des données NFS. Le chemin n'a pas pu être vérifié par SSH.
+- Les namespaces `pihole`, `streaming` et `nvidia-device-plugin` sont maintenant supprimés.
+- L'API Kubernetes reste saine.
+
 **2026-11-15 | 17:59**
 
 Le redémarrage de `minipc` a restauré son état `Ready`.
