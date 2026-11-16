@@ -7,6 +7,13 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-15 - Simplification des services
 
+**2026-11-15 | 22:48**
+
+J'ai corrigé le HelmRelease Immich.
+
+- Le chart `0.12.1` n'accepte plus `immich.persistence.upload`; seul `immich.persistence.library` est monté dans le pod serveur à `/data`.
+- Retiré la valeur invalide sans supprimer le PVC, le PV ni le répertoire `/srv/media/immich-upload`; les données existantes sont donc préservées.
+
 **2026-11-15 | 22:44**
 
 J'ai terminé la migration vers la topologie à trois noeuds.
