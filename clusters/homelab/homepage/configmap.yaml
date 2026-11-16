@@ -13,32 +13,27 @@ data:
   custom.css: ""
   custom.js: ""
   services.yaml: |
-    - Monitoring:
-        - Grafana:
-            icon: grafana.svg
-            href: http://grafana.homelab/login
-
-    - Network:
-        - Router:
-            icon: mdi-router-network
-            href: http://192.168.0.1
-        - UniFi:
-            icon: mdi-access-point-network
-            href: https://unifi/network/default/dashboard
-        - Tailscale:
-            icon: tailscale.svg
-            href: https://login.tailscale.com/admin/machines
-        - ProtonVPN:
-            icon: proton-vpn.svg
-            href: https://account.proton.me/u/2/vpn/dashboardV2
-
-    - Media:
+    - Applications:
+        - Homepage:
+            icon: homepage.svg
+            href: http://homepage.homelab
         - Immich:
             icon: immich.svg
             href: http://immich.homelab:2283
         - File Browser:
             icon: filebrowser.svg
             href: http://filebrowser.homelab
+
+    - Monitoring:
+        - Grafana:
+            icon: grafana.svg
+            href: http://grafana.homelab/login
+        - Prometheus:
+            icon: prometheus.svg
+            href: http://192.168.42.71:9090
+        - Alertmanager:
+            icon: alertmanager.svg
+            href: http://192.168.42.72:9093
   bookmarks.yaml: |
     - Reading:
         - TheNewStack:
