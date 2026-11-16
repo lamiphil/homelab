@@ -7,6 +7,19 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-15 - Simplification des services
 
+**2026-11-15 | 22:44**
+
+J'ai terminé la migration vers la topologie à trois noeuds.
+
+- Désinstallé la release Helm Loki orpheline et vérifié qu'aucune ressource ni aucun secret Helm Loki ne reste.
+- Créé des snapshots etcd avant le retrait, avant le changement de membership et après la migration. Les snapshots, tokens, configurations et sommes SHA-256 sont sauvegardés hors dépôt sous `/home/lamiphil/backups/homelab/k3s/` avec des permissions `0600`.
+- Reconfiguré `minipc`, `datavault` et le kubeconfig local pour utiliser l'API de `magos` à `https://192.168.42.15:6443`.
+- Drained `pi` et `archlinux`, désactivé leurs services k3s-agent, puis supprimé leurs objets Node et leurs pods DaemonSet orphelins.
+- Drained `ubuntuserver`, retiré son membre etcd avec l'annotation gérée par k3s, désactivé son service k3s, puis supprimé son objet Node.
+- Retiré l'ancien endpoint `192.168.42.10` de la configuration de `magos`; son redémarrage comme unique membre etcd a réussi.
+- Le cluster final contient `magos`, `minipc` et `datavault`, tous `Ready`; tous les pods sont `Running` et la Kustomization Flux est saine.
+- Le HelmRelease Immich reste en erreur sur le schéma `immich.persistence.upload`, mais ses quatre pods sont sains. Cette erreur existait avant la migration.
+
 **2026-11-15 | 18:14**
 
 J'ai analysé l'indisponibilité de `minipc` après avoir obtenu un accès SSH.

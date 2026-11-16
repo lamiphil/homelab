@@ -49,17 +49,15 @@ MetalLB uses `192.168.42.60-192.168.42.100`.
 - The UniFi UDM is the local DNS authority for `.homelab` names.
 - k3s uses pod CIDR `10.42.0.0/16` and service CIDR `10.43.0.0/16`.
 
-## Target Node Topology
+## Node Topology
 
-The node migration is in progress.
+| Node | Role / workloads | Network |
+|------|------------------|---------|
+| `magos` | Single k3s server/control-plane and schedulable worker | Wi-Fi |
+| `minipc` | Worker; Immich and File Browser | Wi-Fi |
+| `datavault` | Worker and storage workloads | Ethernet |
 
-| Node | Target role / workloads |
-|------|-------------------------|
-| `magos` | Single k3s server/control-plane and schedulable worker |
-| `minipc` | Worker; Immich and File Browser |
-| `datavault` | Worker and storage workloads |
-
-`ubuntuserver`, `pi`, and `archlinux` are being retired. Before retiring `ubuntuserver`, move Grafana because its HelmRelease is still pinned there, remove the control-plane taint from `magos`, and safely remove `ubuntuserver` from embedded etcd.
+`ubuntuserver`, `pi`, and `archlinux` were retired on 2026-11-15. The surviving agents and local kubeconfig use `https://192.168.42.15:6443`. Because `magos` is the only control plane, its downtime makes the Kubernetes API unavailable.
 
 ## Storage
 
@@ -79,7 +77,7 @@ HostPath volumes pin workloads to a node. Back up and move their data before cha
 Kubernetes metrics --> Prometheus --> Grafana + Alertmanager
 ```
 
-Grafana is currently pinned to `ubuntuserver` in `monitoring/kube-prometheus-stack/helmrelease.yaml`.
+Monitoring workloads have no retired-node scheduling pins.
 
 ## Secrets Management
 
