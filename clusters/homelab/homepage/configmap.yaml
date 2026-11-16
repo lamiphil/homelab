@@ -14,9 +14,6 @@ data:
   custom.js: ""
   services.yaml: |
     - Applications:
-        - Homepage:
-            icon: homepage.svg
-            href: http://homepage.homelab
         - Immich:
             icon: immich.svg
             href: http://immich.homelab:2283
