@@ -30,6 +30,7 @@ spec:
 
   values:
     grafana:
+      defaultDashboardsEnabled: false
       service:
         type: LoadBalancer
         loadBalancerIP: 192.168.42.70

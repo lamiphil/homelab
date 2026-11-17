@@ -7,6 +7,14 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-16 - Dashboard de santé du cluster
 
+**2026-11-16 | 22:53**
+
+J'ai désactivé les dashboards Grafana fournis par défaut par `kube-prometheus-stack`.
+
+- Configuré `grafana.defaultDashboardsEnabled: false` dans le HelmRelease.
+- Le dashboard GitOps `Homelab Cluster Health` reste provisionné séparément et sera conservé.
+- Aucun changement aux règles Prometheus ou Alertmanager.
+
 **2026-11-16 | 22:45**
 
 J'ai ajouté un dashboard Grafana GitOps `Homelab Cluster Health`.
