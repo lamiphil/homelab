@@ -5,6 +5,18 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-16 - Dashboard de santé du cluster
+
+**2026-11-16 | 22:45**
+
+J'ai ajouté un dashboard Grafana GitOps `Homelab Cluster Health`.
+
+- Vue compacte pour navigateur desktop avec une fenêtre de six heures et un rafraîchissement de 30 secondes.
+- Ajouté les états de l'API, de `magos`, des Nodes, des pods et des workloads, les redémarrages récents, les alertes, ainsi que l'utilisation CPU, mémoire, disque et PVC.
+- Appliqué des seuils d'avertissement à 75 % et critiques à 90 %.
+- Exclu du résumé de santé `Watchdog` et les alertes incompatibles avec k3s `KubeProxyDown`, `KubeControllerManagerDown` et `KubeSchedulerDown`.
+- Aucun changement aux règles Prometheus ou Alertmanager.
+
 ## 2026-11-15 - Simplification des services
 
 **2026-11-15 | 22:48**

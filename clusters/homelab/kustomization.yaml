@@ -30,6 +30,7 @@ resources:
 - metallb-system/helmrepo.yaml
 - metallb-system/ipaddresspool.yaml
 - metallb-system/l2advertisement.yaml
+- monitoring/kube-prometheus-stack/cluster-health-dashboard.yaml
 - monitoring/kube-prometheus-stack/helmrelease.yaml
 - monitoring/kube-prometheus-stack/helmrepo.yaml
 - monitoring/namespace.yaml
