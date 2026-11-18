@@ -24,6 +24,7 @@ clusters/homelab/
 ├── metallb-system/             # Bare-metal LoadBalancer in L2 mode
 ├── monitoring/
 │   └── kube-prometheus-stack/  # Prometheus, Grafana, and Alertmanager
+├── cert-manager/               # Let's Encrypt via Cloudflare DNS-01
 ├── praxis/                     # Habit tracker (SQLite on datavault)
 └── traefik-helmchartconfig.yaml
 ```
@@ -88,6 +89,15 @@ Monitoring workloads have no retired-node scheduling pins.
 - SOPS + age encrypts files matching `*-secret.sops.yaml`.
 - Flux decrypts secrets with the `sops-age` Secret in `flux-system`.
 - Encrypted application secrets: `immich-db-secret.sops.yaml` and `praxis-secret.sops.yaml` (Praxis password and session key).
+- `cert-manager/cloudflare-api-token-secret.sops.yaml` holds a Cloudflare token limited to `Zone:DNS:Edit` and `Zone:Zone:Read` on `lamiphil.dev`.
+
+## TLS
+
+- cert-manager (`v1.21.3`) issues Let's Encrypt certificates with the DNS-01 challenge on Cloudflare. Nothing is exposed to the Internet.
+- ClusterIssuers: `letsencrypt-staging` (tests) and `letsencrypt-prod`.
+- To secure an Ingress, add the annotation `cert-manager.io/cluster-issuer: letsencrypt-prod` and a `tls` block with a `secretName`.
+- cert-manager checks the TXT records through `1.1.1.1`, because the UDM answers `lamiphil.dev` names locally.
+- A new cert-manager CRD kind cannot be added in the same commit as cert-manager itself: the flat Flux Kustomization rejects unknown kinds.
 
 ## Work Log
 

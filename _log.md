@@ -5,6 +5,16 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-17 - TLS Let's Encrypt avec cert-manager
+
+J'ai installé cert-manager `v1.21.3` avec le challenge DNS-01 sur Cloudflare.
+
+- Le token Cloudflare est limité à la zone `lamiphil.dev` et chiffré avec SOPS.
+- cert-manager vérifie les enregistrements TXT via `1.1.1.1` et `1.0.0.1`, parce que l'UDM répond localement pour `lamiphil.dev`.
+- Il y a deux ClusterIssuers, `letsencrypt-staging` et `letsencrypt-prod`. Un certificat de staging temporaire a été émis puis supprimé pour valider la chaîne avant la prod.
+- L'Ingress Praxis utilise maintenant `letsencrypt-prod` et le secret `praxis-tls`.
+- Le déploiement s'est fait en deux commits, parce que la Kustomization Flux plate refuse les ClusterIssuers tant que les CRDs n'existent pas.
+
 ## 2026-11-17 - Déploiement de Praxis
 
 **2026-11-17 | 21:56**
