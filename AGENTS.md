@@ -80,9 +80,13 @@ HostPath volumes pin workloads to a node. Back up and move their data before cha
 
 ```
 Kubernetes metrics --> Prometheus --> Grafana + Alertmanager
+Praxis SQLite (read-only) -----------> Grafana
 ```
 
-Monitoring workloads have no retired-node scheduling pins.
+- Grafana is pinned to `datavault`. It reads the live Praxis database through the `frser-sqlite-datasource` plugin (pinned to `4.0.6`, datasource UID `praxis-sqlite`, `mode=ro`).
+- The read-only PV `praxis-data-grafana` mounts `datavault:/srv/praxis` at `/var/lib/praxis`. Grafana gets supplemental group `65532`, and `/srv/praxis` must be mode `750`.
+- Dashboards are ConfigMaps labeled `grafana_dashboard=1`: `Homelab Cluster Health` and `Praxis — Habitudes` (UID `praxis-habits`).
+- In `Praxis — Habitudes`, an unrecorded day is a gap and breaks streaks. Streaks count from today if today is saved, otherwise from yesterday. Habits appear only on the days they were active.
 
 ## Secrets Management
 

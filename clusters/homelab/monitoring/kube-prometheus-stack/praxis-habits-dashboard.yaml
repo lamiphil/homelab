@@ -1,0 +1,376 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: praxis-habits-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  praxis-habits.json: |
+    {
+      "annotations": {
+        "list": []
+      },
+      "description": "Suivi des habitudes Praxis, lu en lecture seule dans la base SQLite. Un jour non enregistré est un trou et coupe les séries.",
+      "editable": false,
+      "graphTooltip": 1,
+      "links": [],
+      "tags": [
+        "praxis"
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "type": "timeseries",
+          "title": "Habitudes faites et note de la journée",
+          "description": "% des habitudes actives faites chaque jour enregistré (axe gauche) et note de la journée de 1 à 13 (axe droit). Un jour non enregistré laisse un trou.",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 24,
+            "h": 9
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "SELECT d.date || 'T12:00:00Z' AS time,\n  ROUND(100.0 * AVG(v.done)) AS \"Habitudes faites\",\n  d.rating AS \"Note de la journée\"\nFROM days d\nLEFT JOIN habit_values v ON v.day_date = d.date\nWHERE d.date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}'\nGROUP BY d.date\nORDER BY d.date",
+              "queryText": "SELECT d.date || 'T12:00:00Z' AS time,\n  ROUND(100.0 * AVG(v.done)) AS \"Habitudes faites\",\n  d.rating AS \"Note de la journée\"\nFROM days d\nLEFT JOIN habit_values v ON v.day_date = d.date\nWHERE d.date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}'\nGROUP BY d.date\nORDER BY d.date",
+              "timeColumns": [
+                "time"
+              ]
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "decimals": 0,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "green"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 10,
+                "showPoints": "always",
+                "pointSize": 6,
+                "spanNulls": false,
+                "insertNulls": 129600000,
+                "axisLabel": "% habitudes",
+                "axisPlacement": "left"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Note de la journée"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "min",
+                    "value": 0
+                  },
+                  {
+                    "id": "max",
+                    "value": 13
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  },
+                  {
+                    "id": "custom.axisPlacement",
+                    "value": "right"
+                  },
+                  {
+                    "id": "custom.axisLabel",
+                    "value": "Note (1–13)"
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "fill": "dash",
+                      "dash": [
+                        6,
+                        4
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "type": "table",
+          "title": "Séries en cours",
+          "description": "Jours consécutifs où l'habitude est faite, à partir d'aujourd'hui si la journée est enregistrée, sinon d'hier. Un jour non enregistré coupe la série. Seules les habitudes actives aujourd'hui sont listées. Ce panneau ignore la plage de temps du tableau de bord.",
+          "gridPos": {
+            "x": 0,
+            "y": 9,
+            "w": 6,
+            "h": 15
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "WITH RECURSIVE\nanchor(d) AS (\n  SELECT CASE WHEN EXISTS (SELECT 1 FROM days WHERE date = '${__to:date:YYYY-MM-DD}')\n    THEN '${__to:date:YYYY-MM-DD}' ELSE date('${__to:date:YYYY-MM-DD}', '-1 day') END\n),\nwalk(habit_id, d, n) AS (\n  SELECT h.id, a.d, 0\n  FROM habits h, anchor a\n  WHERE h.active_from <= a.d AND (h.active_until IS NULL OR h.active_until >= a.d)\n  UNION ALL\n  SELECT w.habit_id, date(w.d, '-1 day'), w.n + 1\n  FROM walk w\n  JOIN habit_values v ON v.habit_id = w.habit_id AND v.day_date = w.d AND v.done = 1\n)\nSELECT h.name AS \"Habitude\", MAX(w.n) AS \"Série (jours)\"\nFROM walk w\nJOIN habits h ON h.id = w.habit_id\nGROUP BY h.id\nORDER BY 2 DESC, h.position",
+              "queryText": "WITH RECURSIVE\nanchor(d) AS (\n  SELECT CASE WHEN EXISTS (SELECT 1 FROM days WHERE date = '${__to:date:YYYY-MM-DD}')\n    THEN '${__to:date:YYYY-MM-DD}' ELSE date('${__to:date:YYYY-MM-DD}', '-1 day') END\n),\nwalk(habit_id, d, n) AS (\n  SELECT h.id, a.d, 0\n  FROM habits h, anchor a\n  WHERE h.active_from <= a.d AND (h.active_until IS NULL OR h.active_until >= a.d)\n  UNION ALL\n  SELECT w.habit_id, date(w.d, '-1 day'), w.n + 1\n  FROM walk w\n  JOIN habit_values v ON v.habit_id = w.habit_id AND v.day_date = w.d AND v.done = 1\n)\nSELECT h.name AS \"Habitude\", MAX(w.n) AS \"Série (jours)\"\nFROM walk w\nJOIN habits h ON h.id = w.habit_id\nGROUP BY h.id\nORDER BY 2 DESC, h.position",
+              "timeColumns": []
+            }
+          ],
+          "timeFrom": "1d",
+          "hideTimeOverride": true,
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                }
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Série (jours)"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  },
+                  {
+                    "id": "custom.align",
+                    "value": "center"
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "red",
+                          "value": null
+                        },
+                        {
+                          "color": "text",
+                          "value": 1
+                        },
+                        {
+                          "color": "green",
+                          "value": 7
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false
+            }
+          }
+        },
+        {
+          "id": 3,
+          "type": "table",
+          "title": "Habitudes par jour",
+          "description": "✓ fait, ✗ pas fait. Case vide: jour non enregistré, ou habitude pas encore créée ou archivée ce jour-là.",
+          "gridPos": {
+            "x": 6,
+            "y": 9,
+            "w": 18,
+            "h": 15
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "WITH RECURSIVE cal(d) AS (\n  SELECT '${__from:date:YYYY-MM-DD}'\n  UNION ALL\n  SELECT date(d, '+1 day') FROM cal WHERE d < '${__to:date:YYYY-MM-DD}'\n)\nSELECT h.name AS habitude, strftime('%m-%d', c.d) AS jour, v.done AS fait\nFROM habits h\nCROSS JOIN cal c\nLEFT JOIN habit_values v ON v.habit_id = h.id AND v.day_date = c.d\nWHERE h.active_from <= '${__to:date:YYYY-MM-DD}'\n  AND (h.active_until IS NULL OR h.active_until >= '${__from:date:YYYY-MM-DD}')\nORDER BY h.position, c.d",
+              "queryText": "WITH RECURSIVE cal(d) AS (\n  SELECT '${__from:date:YYYY-MM-DD}'\n  UNION ALL\n  SELECT date(d, '+1 day') FROM cal WHERE d < '${__to:date:YYYY-MM-DD}'\n)\nSELECT h.name AS habitude, strftime('%m-%d', c.d) AS jour, v.done AS fait\nFROM habits h\nCROSS JOIN cal c\nLEFT JOIN habit_values v ON v.habit_id = h.id AND v.day_date = c.d\nWHERE h.active_from <= '${__to:date:YYYY-MM-DD}'\n  AND (h.active_until IS NULL OR h.active_until >= '${__from:date:YYYY-MM-DD}')\nORDER BY h.position, c.d",
+              "timeColumns": []
+            }
+          ],
+          "transformations": [
+            {
+              "id": "groupingToMatrix",
+              "options": {
+                "columnField": "jour",
+                "rowField": "habitude",
+                "valueField": "fait",
+                "emptyValue": "null"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "habitude\\jour": "Habitude"
+                }
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "center",
+                "minWidth": 38,
+                "cellOptions": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              },
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "✗",
+                      "color": "red",
+                      "index": 1
+                    },
+                    "1": {
+                      "text": "✓",
+                      "color": "green",
+                      "index": 0
+                    }
+                  }
+                },
+                {
+                  "type": "special",
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": " ",
+                      "color": "transparent",
+                      "index": 2
+                    }
+                  }
+                }
+              ],
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Habitude"
+                },
+                "properties": [
+                  {
+                    "id": "custom.align",
+                    "value": "left"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 170
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "auto"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ],
+      "refresh": "",
+      "schemaVersion": 39,
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-30d",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "America/Toronto",
+      "title": "Praxis — Habitudes",
+      "uid": "praxis-habits",
+      "version": 1
+    }

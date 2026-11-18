@@ -1,0 +1,23 @@
+# Read-only view of the Praxis SQLite directory for the Grafana SQLite datasource.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: praxis-data-grafana
+spec:
+  storageClassName: praxis-grafana-static
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /srv/praxis
+    type: Directory
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - datavault

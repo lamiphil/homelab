@@ -5,6 +5,16 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-17 - Tableau de bord Grafana des habitudes Praxis
+
+J'ai ajouté le tableau de bord `Praxis — Habitudes` (UID `praxis-habits`), conçu après une séance de questions.
+
+- Source: la base SQLite live, en lecture seule, via le plugin `frser-sqlite-datasource` `4.0.6`. Prometheus ne garde que 10 jours, donc il ne convient pas à l'historique des habitudes.
+- Grafana est maintenant fixé sur `datavault`. Il monte `/srv/praxis` en lecture seule avec le groupe supplémentaire `65532`. Le répertoire passe en mode `750`.
+- Panneaux: % d'habitudes faites par jour avec la note de la journée, séries en cours, grille habitude × jour. Plage par défaut: 30 jours, mise en page pour navigateur de bureau.
+- Règles: un jour non enregistré est un trou et coupe les séries. Les séries partent d'aujourd'hui si la journée est enregistrée, sinon d'hier. Une habitude n'apparaît que les jours où elle était active.
+- Les requêtes SQL ont été testées sur une copie des vraies données et sur un scénario synthétique (trou, habitude archivée, nouvelle habitude).
+
 ## 2026-11-17 - Sauvegarde de Praxis vers Cloudflare R2
 
 J'ai ajouté la CronJob `praxis-backup`. Elle tourne chaque nuit à 03:30 (heure de Toronto) sur `datavault`.

@@ -37,6 +37,32 @@ spec:
       defaultDashboardsTimezone: "America/Montreal"
       adminUser: "lamiphil"
 
+      # Praxis habit reporting: Grafana reads the live SQLite file read-only,
+      # so it must run on the node that holds /srv/praxis.
+      nodeSelector:
+        kubernetes.io/hostname: datavault
+      securityContext:
+        supplementalGroups: [65532]
+      grafana.ini:
+        plugins:
+          preinstall_sync: frser-sqlite-datasource@4.0.6
+      extraVolumes:
+        - name: praxis-data
+          existingClaim: praxis-data-grafana
+      extraVolumeMounts:
+        - name: praxis-data
+          mountPath: /var/lib/praxis
+          readOnly: true
+      additionalDataSources:
+        - name: Praxis
+          uid: praxis-sqlite
+          type: frser-sqlite-datasource
+          access: proxy
+          editable: false
+          jsonData:
+            path: /var/lib/praxis/praxis.db
+            pathOptions: mode=ro
+
     prometheus:
       service:
         type: LoadBalancer

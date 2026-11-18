@@ -38,6 +38,9 @@ resources:
 - monitoring/kube-prometheus-stack/cluster-health-dashboard.yaml
 - monitoring/kube-prometheus-stack/helmrelease.yaml
 - monitoring/kube-prometheus-stack/helmrepo.yaml
+- monitoring/kube-prometheus-stack/praxis-data-pv.yaml
+- monitoring/kube-prometheus-stack/praxis-data-pvc.yaml
+- monitoring/kube-prometheus-stack/praxis-habits-dashboard.yaml
 - monitoring/namespace.yaml
 - praxis/data-pv.yaml
 - praxis/data-pvc.yaml
