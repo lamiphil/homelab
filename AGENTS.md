@@ -24,6 +24,7 @@ clusters/homelab/
 ├── metallb-system/             # Bare-metal LoadBalancer in L2 mode
 ├── monitoring/
 │   └── kube-prometheus-stack/  # Prometheus, Grafana, and Alertmanager
+├── praxis/                     # Habit tracker (SQLite on datavault)
 └── traefik-helmchartconfig.yaml
 ```
 
@@ -38,6 +39,8 @@ clusters/homelab/
 | `192.168.42.72` | Alertmanager |
 | `192.168.42.80` | Immich |
 | `192.168.42.96` | File Browser |
+
+Praxis has no dedicated IP: Traefik serves it at `https://praxis.lamiphil.dev`. UDM private DNS maps that name to `192.168.42.60`.
 
 MetalLB uses `192.168.42.60-192.168.42.100`.
 
@@ -55,7 +58,7 @@ MetalLB uses `192.168.42.60-192.168.42.100`.
 |------|------------------|---------|
 | `magos` | Single k3s server/control-plane and schedulable worker | Wi-Fi |
 | `minipc` | Worker; Immich and File Browser | Wi-Fi |
-| `datavault` | Worker and storage workloads | Ethernet |
+| `datavault` | Worker and storage workloads; Praxis | Ethernet |
 
 `ubuntuserver`, `pi`, and `archlinux` were retired on 2026-11-15. The surviving agents and local kubeconfig use `https://192.168.42.15:6443`. Because `magos` is the only control plane, its downtime makes the Kubernetes API unavailable.
 
@@ -68,6 +71,7 @@ MetalLB uses `192.168.42.60-192.168.42.100`.
 | `/srv/media/immich-upload` | hostPath | Immich uploads |
 | `/srv/immich/postgres/data` | hostPath | Immich PostgreSQL |
 | `/srv/filebrowser/{database,config}` | hostPath | File Browser state |
+| `datavault:/srv/praxis` | hostPath PV (Retain) | Praxis SQLite; must exist and belong to UID/GID `65532` |
 
 HostPath volumes pin workloads to a node. Back up and move their data before changing node selectors.
 
@@ -83,7 +87,7 @@ Monitoring workloads have no retired-node scheduling pins.
 
 - SOPS + age encrypts files matching `*-secret.sops.yaml`.
 - Flux decrypts secrets with the `sops-age` Secret in `flux-system`.
-- The remaining encrypted application secret is `immich-db-secret.sops.yaml`.
+- Encrypted application secrets: `immich-db-secret.sops.yaml` and `praxis-secret.sops.yaml` (Praxis password and session key).
 
 ## Work Log
 

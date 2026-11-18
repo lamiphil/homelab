@@ -34,4 +34,11 @@ resources:
 - monitoring/kube-prometheus-stack/helmrelease.yaml
 - monitoring/kube-prometheus-stack/helmrepo.yaml
 - monitoring/namespace.yaml
+- praxis/data-pv.yaml
+- praxis/data-pvc.yaml
+- praxis/deployment.yaml
+- praxis/ingress.yaml
+- praxis/namespace.yaml
+- praxis/praxis-secret.sops.yaml
+- praxis/service.yaml
 - traefik-helmchartconfig.yaml

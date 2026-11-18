@@ -5,6 +5,19 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-17 - Déploiement de Praxis
+
+**2026-11-17 | 21:56**
+
+J'ai ajouté les manifests Praxis sous `clusters/homelab/praxis/`.
+
+- Image publique `ghcr.io/lamiphil/praxis:0.1.0`, jamais `latest`.
+- Un seul replica avec la stratégie `Recreate`, puisque SQLite n'accepte qu'un écrivain.
+- Stockage: PV hostPath `Retain` sur `datavault:/srv/praxis`, avec une node affinity qui fixe le pod sur `datavault`. Le répertoire doit exister et appartenir à l'UID/GID `65532`.
+- Conteneur non root, système de fichiers racine en lecture seule, sondes sur `/healthz`, cookie de session `Secure`.
+- Ingress Traefik sur `praxis.lamiphil.dev`, entrypoint `websecure` seulement. Le certificat reste celui par défaut de Traefik jusqu'à la configuration DNS-01.
+- Le mot de passe et la clé de session sont dans `praxis-secret.sops.yaml`.
+
 ## 2026-11-16 - Dashboard de santé du cluster
 
 **2026-11-16 | 22:53**
