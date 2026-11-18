@@ -5,6 +5,15 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-17 - Sauvegarde de Praxis vers Cloudflare R2
+
+J'ai ajouté la CronJob `praxis-backup`. Elle tourne chaque nuit à 03:30 (heure de Toronto) sur `datavault`.
+
+- `sqlite3 .backup` prend un instantané cohérent pendant que Praxis tourne. `PRAGMA integrity_check` doit répondre `ok`.
+- rclone envoie la copie dans le bucket R2 `praxis-backups`. Une règle de cycle de vie R2 supprime les copies après 30 jours.
+- Test de restauration réussi: la copie téléchargée depuis R2 est intègre et contient les mêmes nombres de lignes que la base live (14 habitudes, 1 jour, 14 valeurs).
+- La procédure de restauration est dans `AGENTS.md`.
+
 ## 2026-11-17 - TLS Let's Encrypt avec cert-manager
 
 J'ai installé cert-manager `v1.21.3` avec le challenge DNS-01 sur Cloudflare.
