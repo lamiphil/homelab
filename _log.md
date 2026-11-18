@@ -22,6 +22,7 @@ J'ai installé cert-manager `v1.21.3` avec le challenge DNS-01 sur Cloudflare.
 J'ai ajouté les manifests Praxis sous `clusters/homelab/praxis/`.
 
 - Image publique `ghcr.io/lamiphil/praxis:0.1.0`, jamais `latest`.
+- Mise à jour vers `0.1.1`: `Referrer-Policy: same-origin`. Avec `no-referrer`, les navigateurs envoyaient `Origin: null` et la connexion était refusée («origine interdite»).
 - Un seul replica avec la stratégie `Recreate`, puisque SQLite n'accepte qu'un écrivain.
 - Stockage: PV hostPath `Retain` sur `datavault:/srv/praxis`, avec une node affinity qui fixe le pod sur `datavault`. Le répertoire doit exister et appartenir à l'UID/GID `65532`.
 - Conteneur non root, système de fichiers racine en lecture seule, sondes sur `/healthz`, cookie de session `Secure`.
