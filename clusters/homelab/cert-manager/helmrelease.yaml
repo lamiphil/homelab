@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: cert-manager
+      version: "v1.21.3"
+      sourceRef:
+        kind: HelmRepository
+        name: jetstack
+        namespace: flux-system
+
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+
+  values:
+    crds:
+      enabled: true
+      keep: true
+    # The UDM answers lamiphil.dev names locally; check ACME TXT records on public DNS.
+    dns01RecursiveNameservers: "1.1.1.1:53,1.0.0.1:53"
+    dns01RecursiveNameserversOnly: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+    webhook:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+    cainjector:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
