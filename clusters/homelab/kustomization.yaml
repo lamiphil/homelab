@@ -43,7 +43,9 @@ resources:
 - praxis/data-pvc.yaml
 - praxis/deployment.yaml
 - praxis/ingress.yaml
+- praxis/backup-cronjob.yaml
 - praxis/namespace.yaml
+- praxis/praxis-backup-r2-secret.sops.yaml
 - praxis/praxis-secret.sops.yaml
 - praxis/service.yaml
 - traefik-helmchartconfig.yaml

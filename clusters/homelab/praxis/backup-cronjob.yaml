@@ -1,0 +1,95 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: praxis-backup
+  namespace: praxis
+spec:
+  schedule: "30 3 * * *"
+  timeZone: America/Toronto
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: praxis-backup
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          # 1. Consistent snapshot of the live WAL database, then integrity check.
+          initContainers:
+            - name: snapshot
+              image: keinos/sqlite3:3.54.1
+              command:
+                - sh
+                - -ec
+                - |
+                  sqlite3 /data/praxis.db ".backup /backup/praxis.db"
+                  test "$(sqlite3 /backup/praxis.db 'PRAGMA integrity_check')" = ok
+              env:
+                - name: SQLITE_TMPDIR
+                  value: /tmp
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: backup
+                  mountPath: /backup
+                - name: tmp
+                  mountPath: /tmp
+          # 2. Upload to R2. A bucket lifecycle rule deletes copies after 30 days.
+          containers:
+            - name: upload
+              image: rclone/rclone:1.76.0
+              command:
+                - sh
+                - -ec
+                - rclone copyto /backup/praxis.db "r2:praxis-backups/praxis-$(date -u +%Y%m%dT%H%M%SZ).db"
+              env:
+                - name: HOME
+                  value: /tmp
+                - name: RCLONE_CONFIG_R2_TYPE
+                  value: s3
+                - name: RCLONE_CONFIG_R2_PROVIDER
+                  value: Cloudflare
+                - name: RCLONE_CONFIG_R2_NO_CHECK_BUCKET
+                  value: "true"
+              envFrom:
+                # RCLONE_CONFIG_R2_ACCESS_KEY_ID, _SECRET_ACCESS_KEY, _ENDPOINT
+                - secretRef:
+                    name: praxis-backup-r2
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: praxis-data
+            - name: backup
+              emptyDir:
+                sizeLimit: 256Mi
+            - name: tmp
+              emptyDir:
+                sizeLimit: 64Mi
