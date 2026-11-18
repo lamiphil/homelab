@@ -42,6 +42,7 @@ J'ai ajouté les manifests Praxis sous `clusters/homelab/praxis/`.
 
 - Image publique `ghcr.io/lamiphil/praxis:0.1.0`, jamais `latest`.
 - Mise à jour vers `0.1.1`: `Referrer-Policy: same-origin`. Avec `no-referrer`, les navigateurs envoyaient `Origin: null` et la connexion était refusée («origine interdite»).
+- Mise à jour vers `0.1.2`: changer la date dans le sélecteur charge la journée tout de suite. Avant, il fallait cliquer sur «Voir», et la page pouvait afficher une date pendant que les cases et l'enregistrement visaient une autre journée.
 - Un seul replica avec la stratégie `Recreate`, puisque SQLite n'accepte qu'un écrivain.
 - Stockage: PV hostPath `Retain` sur `datavault:/srv/praxis`, avec une node affinity qui fixe le pod sur `datavault`. Le répertoire doit exister et appartenir à l'UID/GID `65532`.
 - Conteneur non root, système de fichiers racine en lecture seule, sondes sur `/healthz`, cookie de session `Secure`.
