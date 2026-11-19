@@ -13,6 +13,8 @@ Nettoyage de `/srv/media` sur minipc, après inventaire et confirmation dossier 
 
 File Browser ne montre plus que `Documents/` : le volume NFS est monté avec `subPath: Documents` sur `/srv`. La racine (`/srv`) et le scope utilisateur (`.`) de sa base restent valides.
 
+PV/PVC `immich-upload-local` retirés de Git (vides, plus montés depuis le 2026-11-15 ; les uploads Immich sont dans `photos/upload`). Flux les a supprimés ; le dossier vide `/srv/media/immich-upload` a été supprimé à la main sur minipc. Immich vérifié sain après le prune (4 déploiements 1/1, API OK). La première sauvegarde R2 d'Immich était encore en cours à ce moment.
+
 ## 2026-11-19 - Tableau de bord Grafana des sauvegardes R2
 
 **2026-11-19 | 17:05**
