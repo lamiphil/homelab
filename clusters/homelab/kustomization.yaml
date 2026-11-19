@@ -43,8 +43,6 @@ resources:
 - immich/namespace.yaml
 - immich/postgres-deployment.yaml
 - immich/postgres-service.yaml
-- immich/upload-pv-local.yaml
-- immich/upload-pvc-local.yaml
 - metallb-system/helmrelease.yaml
 - metallb-system/helmrepo.yaml
 - metallb-system/ipaddresspool.yaml

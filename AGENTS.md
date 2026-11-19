@@ -73,8 +73,7 @@ MetalLB uses `192.168.42.60-192.168.42.100`.
 | Path | Type | Used by |
 |------|------|---------|
 | `192.168.42.11:/srv/media` | NFS | File Browser, mounted with `subPath: Documents` so it only shows `/srv/media/Documents` |
-| `/srv/media/photos` | hostPath | Immich library |
-| `/srv/media/immich-upload` | hostPath | Immich uploads |
+| `/srv/media/photos` | hostPath PV (Retain) | Immich library, mounted at `/data`; uploads live in `photos/upload`. Never move it |
 | `/srv/immich/postgres/data` | hostPath | Immich PostgreSQL |
 | `/srv/filebrowser/{database,config}` | hostPath | File Browser state |
 | `datavault:/srv/praxis` | hostPath PV (Retain) | Praxis SQLite; must exist and belong to UID/GID `65532` |
