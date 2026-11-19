@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 03:59**
+
+Grafana SSO validé; Immich OAuth activé dans l'interface (auto-launch actif, connexion par mot de passe via `/auth/login?autoLaunch=0`) et compte existant lié. Le LoadBalancer Grafana `.70` devient ClusterIP. Immich garde `.80` tant que l'application mobile n'utilise pas `https://immich.lamiphil.dev`.
+
 **2026-11-19 | 03:51**
 
 Grafana : connexion OIDC native avec Authentik (application `grafana`, RS256, groupe `homelab-users` -> rôle Admin). Le client ID et le secret sont dans `grafana-oidc-secret.sops.yaml`. Le stockage de Grafana est éphémère, donc l'admin local est recréé à chaque démarrage avec l'email `philippe.lamy@lamiphil.dev` pour que la connexion SSO s'y rattache. Le formulaire local reste disponible en secours. Immich passe aussi en OIDC (application `immich`), configuré dans l'interface d'administration d'Immich.
