@@ -5,6 +5,17 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - TLS pour les services du homelab
+
+**2026-11-19 | 01:45**
+
+J'ai préparé la première phase de migration des services vers Traefik et HTTPS.
+
+- Ajouté des Ingress cert-manager pour Homepage, File Browser, Immich, Grafana, Prometheus et Alertmanager sous `*.lamiphil.dev`.
+- Réutilisé le ClusterIssuer `letsencrypt-prod` et le point d'entrée Traefik `websecure` validés avec Praxis.
+- Protégé Prometheus et Alertmanager avec un Middleware BasicAuth et un hash bcrypt chiffré par SOPS; aucun mot de passe en clair n'est conservé.
+- Conservé temporairement les Services LoadBalancer existants pour permettre la validation et un retour arrière avant leur conversion en ClusterIP.
+
 ## 2026-11-17 - Tableau de bord Grafana des habitudes Praxis
 
 J'ai ajouté le tableau de bord `Praxis — Habitudes` (UID `praxis-habits`), conçu après une séance de questions.

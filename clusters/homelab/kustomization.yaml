@@ -7,6 +7,7 @@ resources:
 - cert-manager/helmrepo.yaml
 - cert-manager/namespace.yaml
 - filebrowser/deployment.yaml
+- filebrowser/ingress.yaml
 - filebrowser/media-pv.yaml
 - filebrowser/media-pvc.yaml
 - filebrowser/namespace.yaml
@@ -17,6 +18,7 @@ resources:
 - homepage/clusterrolebinding.yaml
 - homepage/configmap.yaml
 - homepage/deployment.yaml
+- homepage/ingress.yaml
 - homepage/namespace.yaml
 - homepage/secret.yaml
 - homepage/service.yaml
@@ -24,6 +26,7 @@ resources:
 - immich/helmrelease.yaml
 - immich/helmrepository.yaml
 - immich/immich-db-secret.sops.yaml
+- immich/ingress.yaml
 - immich/library-pv-local.yaml
 - immich/library-pvc-local.yaml
 - immich/namespace.yaml
@@ -38,6 +41,8 @@ resources:
 - monitoring/kube-prometheus-stack/cluster-health-dashboard.yaml
 - monitoring/kube-prometheus-stack/helmrelease.yaml
 - monitoring/kube-prometheus-stack/helmrepo.yaml
+- monitoring/kube-prometheus-stack/ingresses.yaml
+- monitoring/kube-prometheus-stack/monitoring-basic-auth-secret.sops.yaml
 - monitoring/kube-prometheus-stack/praxis-data-pv.yaml
 - monitoring/kube-prometheus-stack/praxis-data-pvc.yaml
 - monitoring/kube-prometheus-stack/praxis-habits-dashboard.yaml
