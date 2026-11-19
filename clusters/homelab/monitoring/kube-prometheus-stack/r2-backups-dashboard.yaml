@@ -11,7 +11,7 @@ data:
       "annotations": {
         "list": []
       },
-      "description": "Cloudflare R2 backup buckets: storage size, object count, Class A/B operations, and backup freshness.",
+      "description": "Cloudflare R2 backup buckets: storage size, object count, Class A/B operations, backup freshness, and projected monthly storage cost.",
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 1,
@@ -269,7 +269,7 @@ data:
           "id": 4,
           "type": "timeseries",
           "title": "Stored size per bucket",
-          "description": "Max storage (payload + metadata) reported by Cloudflare R2 analytics per bucket.",
+          "description": "Payload size reported by Cloudflare R2 analytics per bucket. Metadata overhead (<0.1%) is excluded.",
           "datasource": {
             "type": "yesoreyeram-infinity-datasource",
             "uid": "cloudflare-r2"
@@ -306,7 +306,7 @@ data:
                   "type": "timestamp"
                 },
                 {
-                  "selector": "$sum([max.payloadSize, max.metadataSize])",
+                  "selector": "max.payloadSize",
                   "text": "size",
                   "type": "number"
                 }
@@ -338,7 +338,7 @@ data:
                   "type": "timestamp"
                 },
                 {
-                  "selector": "$sum([max.payloadSize, max.metadataSize])",
+                  "selector": "max.payloadSize",
                   "text": "size",
                   "type": "number"
                 }
@@ -370,7 +370,7 @@ data:
                   "type": "timestamp"
                 },
                 {
-                  "selector": "$sum([max.payloadSize, max.metadataSize])",
+                  "selector": "max.payloadSize",
                   "text": "size",
                   "type": "number"
                 }
@@ -1106,6 +1106,522 @@ data:
               "showLegend": true
             }
           }
+        },
+        {
+          "id": 8,
+          "type": "stat",
+          "title": "Praxis \u2014 projected monthly storage",
+          "description": "Projected monthly storage bill for this bucket, based on the latest Cloudflare R2 analytics snapshot and the standard rate of $0.015 per GB-month. Shown gross; Cloudflare's 10 GB-month free tier is applied once at the account level.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 20
+          },
+          "timeFrom": "24h",
+          "targets": [
+            {
+              "refId": "praxis-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "graphql",
+              "parser": "backend",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}"
+              },
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "max.payloadSize",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
+            }
+          ],
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "mode": "binary",
+                "binary": {
+                  "left": "size",
+                  "operator": "*",
+                  "right": "1.5e-11"
+                },
+                "replaceFields": true,
+                "alias": "cost_usd"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "decimals": 3,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "red",
+                    "value": 5.0
+                  }
+                ]
+              },
+              "mappings": [],
+              "noValue": "N/A"
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "horizontal",
+            "textMode": "value_and_name",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/cost_usd.*/",
+              "values": false
+            },
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 9,
+          "type": "stat",
+          "title": "Authentik \u2014 projected monthly storage",
+          "description": "Projected monthly storage bill for this bucket, based on the latest Cloudflare R2 analytics snapshot and the standard rate of $0.015 per GB-month. Shown gross; Cloudflare's 10 GB-month free tier is applied once at the account level.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 6,
+            "y": 20
+          },
+          "timeFrom": "24h",
+          "targets": [
+            {
+              "refId": "authentik-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "graphql",
+              "parser": "backend",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}"
+              },
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "max.payloadSize",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
+            }
+          ],
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "mode": "binary",
+                "binary": {
+                  "left": "size",
+                  "operator": "*",
+                  "right": "1.5e-11"
+                },
+                "replaceFields": true,
+                "alias": "cost_usd"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "decimals": 3,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "red",
+                    "value": 5.0
+                  }
+                ]
+              },
+              "mappings": [],
+              "noValue": "N/A"
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "horizontal",
+            "textMode": "value_and_name",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/cost_usd.*/",
+              "values": false
+            },
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 10,
+          "type": "stat",
+          "title": "Immich \u2014 projected monthly storage",
+          "description": "Projected monthly storage bill for this bucket, based on the latest Cloudflare R2 analytics snapshot and the standard rate of $0.015 per GB-month. Shown gross; Cloudflare's 10 GB-month free tier is applied once at the account level.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 12,
+            "y": 20
+          },
+          "timeFrom": "24h",
+          "targets": [
+            {
+              "refId": "immich-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "graphql",
+              "parser": "backend",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}"
+              },
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "max.payloadSize",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
+            }
+          ],
+          "transformations": [
+            {
+              "id": "calculateField",
+              "options": {
+                "mode": "binary",
+                "binary": {
+                  "left": "size",
+                  "operator": "*",
+                  "right": "1.5e-11"
+                },
+                "replaceFields": true,
+                "alias": "cost_usd"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "decimals": 3,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "red",
+                    "value": 5.0
+                  }
+                ]
+              },
+              "mappings": [],
+              "noValue": "N/A"
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "horizontal",
+            "textMode": "value_and_name",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/cost_usd.*/",
+              "values": false
+            },
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 11,
+          "type": "stat",
+          "title": "All buckets \u2014 projected monthly storage",
+          "description": "Projected monthly storage bill across all three R2 backup buckets. Gross figure uses $0.015 per GB-month. 'After 10 GB free tier' subtracts Cloudflare's per-account monthly storage allowance; a negative value means current storage is still within the free tier.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 18,
+            "y": 20
+          },
+          "timeFrom": "24h",
+          "targets": [
+            {
+              "refId": "total",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "graphql",
+              "parser": "backend",
+              "source": "url",
+              "format": "table",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$bs:[String!]){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName_in:$bs},limit:1000,orderBy:[datetime_ASC]){dimensions{datetime bucketName} max{payloadSize}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"bs\": [\"praxis-backups\", \"authentik-backups\", \"immich-backups\"]}"
+              },
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "dimensions.bucketName",
+                  "text": "bucket",
+                  "type": "string"
+                },
+                {
+                  "selector": "max.payloadSize",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
+            }
+          ],
+          "transformations": [
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "bucket": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "size": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  }
+                }
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "mode": "binary",
+                "binary": {
+                  "left": "size (lastNotNull)",
+                  "operator": "*",
+                  "right": "1.5e-11"
+                },
+                "replaceFields": false,
+                "alias": "cost_usd"
+              }
+            },
+            {
+              "id": "reduce",
+              "options": {
+                "reducers": [
+                  "sum"
+                ],
+                "includeTimeField": false,
+                "mode": "reduceFields",
+                "fields": "cost_usd"
+              }
+            },
+            {
+              "id": "calculateField",
+              "options": {
+                "mode": "binary",
+                "binary": {
+                  "left": "cost_usd",
+                  "operator": "-",
+                  "right": "0.15"
+                },
+                "replaceFields": false,
+                "alias": "cost_after_free_tier"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {},
+                "indexByName": {
+                  "cost_usd": 0,
+                  "cost_after_free_tier": 1
+                },
+                "renameByName": {
+                  "cost_usd": "Gross storage cost",
+                  "cost_after_free_tier": "After 10 GB free tier"
+                }
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "decimals": 3,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 1.0
+                  },
+                  {
+                    "color": "red",
+                    "value": 10.0
+                  }
+                ]
+              },
+              "mappings": [],
+              "noValue": "N/A"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "After 10 GB free tier"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "green"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "orientation": "vertical",
+            "textMode": "value_and_name",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "wideLayout": true
+          }
         }
       ],
       "refresh": "30s",
@@ -1147,6 +1663,6 @@ data:
       "timezone": "browser",
       "title": "Homelab R2 Backups",
       "uid": "homelab-r2-backups",
-      "version": 2,
+      "version": 3,
       "weekStart": ""
     }
