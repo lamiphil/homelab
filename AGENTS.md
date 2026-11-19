@@ -18,7 +18,7 @@ Do not use `kubectl apply` for persistent changes. The repository is the desired
 ```
 clusters/homelab/
 ├── authentik/                   # Identity provider, PostgreSQL, and R2 backups
-├── filebrowser/                 # Browser-based file manager for /srv/media
+├── filebrowser/                 # Browser-based file manager for /srv/media/Documents
 ├── flux-system/                # Flux bootstrap; do not edit gotk-components.yaml manually
 ├── homepage/                   # Landing page and service dashboard
 ├── immich/                     # Photo management, PostgreSQL, Valkey, and ML
@@ -72,7 +72,7 @@ MetalLB uses `192.168.42.60-192.168.42.100`.
 
 | Path | Type | Used by |
 |------|------|---------|
-| `192.168.42.11:/srv/media` | NFS | File Browser |
+| `192.168.42.11:/srv/media` | NFS | File Browser, mounted with `subPath: Documents` so it only shows `/srv/media/Documents` |
 | `/srv/media/photos` | hostPath | Immich library |
 | `/srv/media/immich-upload` | hostPath | Immich uploads |
 | `/srv/immich/postgres/data` | hostPath | Immich PostgreSQL |

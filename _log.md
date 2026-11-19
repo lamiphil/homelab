@@ -7,6 +7,12 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - Tableau de bord Grafana des sauvegardes R2
 
+**2026-11-19 | 17:22**
+
+Nettoyage de `/srv/media` sur minipc, après inventaire et confirmation dossier par dossier. Supprimés définitivement : `Movies/` (263G), `TV/` (89G) et `downloads/` (340G, copies des films plus un livre audio et un ISO), restes de la pile streaming retirée le 2026-11-15, et `.Trash-1000/` (12M). Environ 690G libérés ; le disque passe de 772G à 82G utilisés. Aucun pod ne montait ces dossiers et Immich n'a aucune bibliothèque externe (6086 assets, tous sous `/data`). `photos/` n'a pas été touché.
+
+File Browser ne montre plus que `Documents/` : le volume NFS est monté avec `subPath: Documents` sur `/srv`. La racine (`/srv`) et le scope utilisateur (`.`) de sa base restent valides.
+
 **2026-11-19 | 17:05**
 
 Objectif : visualiser dans Grafana la fraicheur, la taille, le nombre d'objets et les operations Class A/B des trois buckets R2 (`praxis-backups`, `authentik-backups`, `immich-backups`).
