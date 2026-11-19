@@ -37,12 +37,17 @@ clusters/homelab/
 | `192.168.42.60` | Traefik |
 | `192.168.42.61` | Homepage |
 | `192.168.42.70` | Grafana |
-| `192.168.42.71` | Prometheus |
-| `192.168.42.72` | Alertmanager |
 | `192.168.42.80` | Immich |
-| `192.168.42.96` | File Browser |
 
-Praxis has no dedicated IP: Traefik serves it at `https://praxis.lamiphil.dev`. UDM private DNS maps that name to `192.168.42.60`.
+Prometheus, Alertmanager, File Browser, and Praxis have no dedicated IP: Traefik serves them at `https://<service>.lamiphil.dev`. UDM private DNS maps those names to `192.168.42.60`.
+
+## SSO (Authentik)
+
+- Authentik runs at `https://auth.lamiphil.dev`. The admin account is `akadmin`; daily access uses `lamiphil`, a member of `homelab-users`.
+- ForwardAuth: Proxy Provider `homelab-forward-auth` (domain level, cookie domain `lamiphil.dev`), application `Homelab`, served by the embedded outpost. Access is bound to `homelab-users`.
+- Traefik Middleware `authentik-forward-auth` (one copy per namespace, in `authentik/forward-auth-middlewares.yaml`) protects Prometheus, Alertmanager, File Browser, and Praxis.
+- Homepage is intentionally not protected. Never put the middleware on Authentik's own Ingress.
+- A protected service must not keep a LoadBalancer IP: it would bypass Authentik.
 
 MetalLB uses `192.168.42.60-192.168.42.100`.
 

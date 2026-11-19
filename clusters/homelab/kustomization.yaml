@@ -5,6 +5,7 @@ resources:
 - authentik/authentik-secret.sops.yaml
 - authentik/authentik-smtp-secret.sops.yaml
 - authentik/backup-cronjob.yaml
+- authentik/forward-auth-middlewares.yaml
 - authentik/helmrelease.yaml
 - authentik/helmrepository.yaml
 - authentik/namespace.yaml
@@ -22,7 +23,6 @@ resources:
 - filebrowser/service.yaml
 - flux-system/gotk-components.yaml
 - flux-system/gotk-sync.yaml
-- homepage/authentik-middleware.yaml
 - homepage/clusterrole.yaml
 - homepage/clusterrolebinding.yaml
 - homepage/configmap.yaml
@@ -51,7 +51,6 @@ resources:
 - monitoring/kube-prometheus-stack/helmrelease.yaml
 - monitoring/kube-prometheus-stack/helmrepo.yaml
 - monitoring/kube-prometheus-stack/ingresses.yaml
-- monitoring/kube-prometheus-stack/monitoring-basic-auth-secret.sops.yaml
 - monitoring/kube-prometheus-stack/praxis-data-pv.yaml
 - monitoring/kube-prometheus-stack/praxis-data-pvc.yaml
 - monitoring/kube-prometheus-stack/praxis-habits-dashboard.yaml

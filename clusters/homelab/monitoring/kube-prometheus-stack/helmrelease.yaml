@@ -65,13 +65,11 @@ spec:
 
     prometheus:
       service:
-        type: LoadBalancer
-        loadBalancerIP: 192.168.42.71
+        type: ClusterIP
 
     alertmanager:
       service:
-        type: LoadBalancer
-        loadBalancerIP: 192.168.42.72
+        type: ClusterIP
 
     nodeExporter:
       nodeSelector: {}

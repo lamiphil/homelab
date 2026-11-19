@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 03:36**
+
+Homepage n'est plus derrière Authentik, à la demande de Philippe. Prometheus, Alertmanager, File Browser et Praxis passent maintenant par le ForwardAuth Authentik; le BasicAuth du monitoring et son Secret SOPS sont supprimés. Les LoadBalancers `.71`, `.72` et `.96` deviennent ClusterIP pour supprimer tout contournement. File Browser et Praxis gardent leur propre connexion pour l'instant. Grafana et Immich passeront en OIDC natif.
+
 **2026-11-19 | 03:26**
 
 Pilote SSO : Homepage passe par un middleware Traefik ForwardAuth vers l'outpost intégré d'Authentik (fournisseur `homelab-forward-auth`, mode domaine, cookie `lamiphil.dev`, accès réservé au groupe `homelab-users`). Le LoadBalancer `.61` reste temporairement comme retour arrière et contourne encore l'authentification.
