@@ -27,6 +27,9 @@ spec:
     global:
       nodeSelector:
         kubernetes.io/hostname: datavault
+      envFrom:
+        - secretRef:
+            name: authentik-smtp
       volumeMounts:
         - name: data
           mountPath: /data

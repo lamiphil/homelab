@@ -95,7 +95,7 @@ Praxis SQLite (read-only) -----------> Grafana
 
 - SOPS + age encrypts files matching `*-secret.sops.yaml`.
 - Flux decrypts secrets with the `sops-age` Secret in `flux-system`.
-- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `immich-db-secret.sops.yaml`, and `praxis-secret.sops.yaml`.
+- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich-db-secret.sops.yaml`, and `praxis-secret.sops.yaml`.
 - `authentik/authentik-backup-r2-secret.sops.yaml` contains a token limited to the `authentik-backups` bucket.
 - `cert-manager/cloudflare-api-token-secret.sops.yaml` holds a Cloudflare token limited to `Zone:DNS:Edit` and `Zone:Zone:Read` on `lamiphil.dev`.
 

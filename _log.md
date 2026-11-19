@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 03:00**
+
+J'ai configuré l'envoi SMTP Authentik par Fastmail sur le port 587 avec STARTTLS. Les courriels utilisent `Homelab <homelab@lamiphil.dev>` comme expéditeur; l'identifiant et le mot de passe applicatif sont conservés dans un Secret chiffré SOPS.
+
 **2026-11-19 | 02:32**
 
 Flux a déployé Authentik avec succès. Le HelmRelease, PostgreSQL, le serveur, le worker et le certificat `authentik-tls` sont Ready; `https://auth.lamiphil.dev/if/flow/initial-setup/` répond en HTTPS avec un certificat valide.

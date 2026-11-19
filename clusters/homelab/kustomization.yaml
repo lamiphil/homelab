@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - authentik/authentik-backup-r2-secret.sops.yaml
 - authentik/authentik-secret.sops.yaml
+- authentik/authentik-smtp-secret.sops.yaml
 - authentik/backup-cronjob.yaml
 - authentik/helmrelease.yaml
 - authentik/helmrepository.yaml
