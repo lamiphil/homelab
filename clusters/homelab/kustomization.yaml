@@ -32,8 +32,10 @@ resources:
 - homepage/secret.yaml
 - homepage/service.yaml
 - homepage/serviceaccount.yaml
+- immich/backup-cronjob.yaml
 - immich/helmrelease.yaml
 - immich/helmrepository.yaml
+- immich/immich-backup-r2-secret.sops.yaml
 - immich/immich-db-secret.sops.yaml
 - immich/ingress.yaml
 - immich/library-pv-local.yaml

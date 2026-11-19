@@ -99,7 +99,7 @@ Praxis SQLite (read-only) -----------> Grafana
 
 - SOPS + age encrypts files matching `*-secret.sops.yaml`.
 - Flux decrypts secrets with the `sops-age` Secret in `flux-system`.
-- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich-db-secret.sops.yaml`, and `praxis-secret.sops.yaml`.
+- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich/immich-db-secret.sops.yaml`, `immich/immich-backup-r2-secret.sops.yaml`, and `praxis/praxis-secret.sops.yaml`.
 - `authentik/authentik-backup-r2-secret.sops.yaml` contains a token limited to the `authentik-backups` bucket.
 - `cert-manager/cloudflare-api-token-secret.sops.yaml` holds a Cloudflare token limited to `Zone:DNS:Edit` and `Zone:Zone:Read` on `lamiphil.dev`.
 
@@ -130,6 +130,22 @@ Restore:
 3. Copy the dump into the PostgreSQL pod and restore it with `pg_restore --clean --if-exists --no-owner --single-transaction --exit-on-error --username=authentik --dbname=authentik`.
 4. Back up the current `/srv/authentik/data`, extract the matching data archive there, and restore UID/GID `1000` ownership.
 5. Resume Flux, wait for both Authentik deployments, and test login before deleting the temporary restore files.
+
+## Immich backups
+
+- CronJob `immich/immich-backup` runs nightly at 03:00 America/Toronto on `minipc` (the only node that sees the library hostPath).
+- It dumps the Immich PostgreSQL database with `pg_dump --format=custom`, then runs `rclone sync /data/upload r2:immich-backups/originals` and uploads the dump to `r2:immich-backups/db/immich-<UTC>.dump`.
+- `rclone sync` uses `--backup-dir r2:immich-backups/trash/<date>` with a timestamp `--suffix`: any file deleted or overwritten on the source is moved under `trash/<date>/` instead of being destroyed. Add an R2 lifecycle rule `expire-trash-30d` on prefix `trash/` with `Delete uploaded objects: 30 days` to get a rolling 30-day recycle bin.
+- The `immich-backups` R2 bucket is scoped to a dedicated Object Read & Write token in `immich/immich-backup-r2-secret.sops.yaml`.
+- A failed run fires `KubeJobFailed`. To run a backup now: `kubectl -n immich create job immich-backup-manual --from=cronjob/immich-backup`.
+
+Restore:
+
+1. Download the matching `db/immich-<ts>.dump` and the needed originals from R2 (or sync the whole `originals/` prefix back to a scratch directory).
+2. Suspend Flux (`kubectl -n flux-system patch kustomization flux-system --type merge -p '{"spec":{"suspend":true}}'`) and scale `deploy/immich-server` and `deploy/immich-machine-learning` to zero.
+3. Copy the dump into the PostgreSQL pod and restore it with `pg_restore --clean --if-exists --no-owner --single-transaction --exit-on-error --username=immich --dbname=immich`.
+4. On `minipc`, stage the originals under `/srv/media/photos/upload/` preserving ownership (`chown -R 1000:1000`).
+5. Resume Flux, wait for Immich to come back, and verify a photo opens and faces/albums are present before removing the scratch copy.
 
 ## TLS
 

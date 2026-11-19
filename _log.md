@@ -5,6 +5,25 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - Sauvegarde Immich vers R2
+
+**2026-11-19 | 16:40**
+
+Mesure prealable sur minipc : `/data/upload` contient 64 GiB d'originaux (6 144 fichiers), le reste de `/data` (thumbs, encoded-video) est regenerable et exclu. La base PostgreSQL Immich fait 207 MB (~40 MB compresse). Croissance observee : ~10 GiB par an sur 2025-2026 ; le pic 2023 (+30 GiB) etait un import en bloc.
+
+Comparaison de cinq destinations faite (R2 Standard, R2 Infrequent Access, Backblaze B2, Hetzner Storage Box BX11, AWS Glacier Deep Archive) plus variantes rclone nu vs restic/kopia. Decision : Cloudflare R2 Standard avec `rclone sync` pour reutiliser exactement le pattern des CronJob `praxis-backup` et `authentik-backup`. Cout attendu : ~1 USD/mois aux 65 GiB actuels, ~2 USD/mois au double, egress gratuit pour les restaurations.
+
+R2 n'expose pas encore le versioning d'objets dans le tableau de bord. Protection de suppression obtenue autrement : `rclone sync --backup-dir r2:immich-backups/trash/<date> --suffix -<ts>` deplace tout fichier ecrase ou supprime dans `trash/`, et la regle de cycle de vie `expire-trash-30d` sur le prefixe `trash/` purge apres 30 jours. Chiffrement cote client refuse (le compte R2 est deja scopé par token) ; les originaux Immich restent lisibles dans le tableau de bord R2.
+
+Ajouts GitOps :
+
+- `clusters/homelab/immich/backup-cronjob.yaml` : CronJob `immich-backup` a 03:00 America/Toronto, nodeSelector `minipc`, concurrencyPolicy Forbid, `activeDeadlineSeconds: 21600`. InitContainer `dump` (`postgres:16.10-alpine`, UID 70) : `pg_dump --format=custom` puis `pg_restore --list` pour valider. Container `upload` (`rclone/rclone:1.76.0`, UID 65532) : sync originals vers R2 avec `--backup-dir`/`--suffix`/`--bwlimit 8M`/`--tpslimit 50`, puis `rclone copyto` du dump sous `db/immich-<ts>.dump`, puis `rclone cat` de controle. Montage PVC `immich-library-local` en lecture seule, root filesystem read-only, caps drop ALL.
+- `clusters/homelab/immich/immich-backup-r2-secret.sops.yaml` : Secret `immich-backup-r2` chiffre SOPS, cinq cles `RCLONE_CONFIG_R2_*`. Token R2 d'ecriture limite au bucket `immich-backups`.
+- Entrees ajoutees a `clusters/homelab/kustomization.yaml`.
+- AGENTS.md : section `## Immich backups` avec procedure de restauration.
+
+A faire cote Cloudflare avant que le job serve a quelque chose : activer la regle de cycle de vie sur prefixe `trash/` (`Delete uploaded objects: 30 days`) et, en option, `abort-incomplete-7d` sur tout le bucket. Premiere execution a declencher manuellement via `kubectl -n immich create job immich-backup-manual --from=cronjob/immich-backup` ; sur Wi-Fi minipc, prevoir ~15 h pour les 64 GiB initiaux (reprise automatique via rclone).
+
 ## 2026-11-19 - TLS pour les services du homelab
 
 **2026-11-19 | 16:10**

@@ -1,0 +1,145 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: immich-backup
+  namespace: immich
+spec:
+  schedule: "0 3 * * *"
+  timeZone: America/Toronto
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 21600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: immich-backup
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          nodeSelector:
+            kubernetes.io/hostname: minipc
+          securityContext:
+            fsGroup: 65532
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile:
+              type: RuntimeDefault
+          initContainers:
+            - name: dump
+              image: postgres:16.10-alpine
+              command:
+                - sh
+                - -ec
+                - |
+                  pg_dump \
+                    --host=immich-postgres \
+                    --username=immich \
+                    --dbname=immich \
+                    --format=custom \
+                    --file=/backup/immich.dump
+                  pg_restore --list /backup/immich.dump >/dev/null
+                  ls -lh /backup/immich.dump
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: immich-db-secret
+                      key: POSTGRES_PASSWORD
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 70
+                runAsGroup: 70
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              volumeMounts:
+                - name: backup
+                  mountPath: /backup
+                - name: tmp
+                  mountPath: /tmp
+          containers:
+            - name: upload
+              image: rclone/rclone:1.76.0
+              command:
+                - sh
+                - -ec
+                - |
+                  timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+                  date_prefix="$(date -u +%Y-%m-%d)"
+
+                  echo "=== sync originals to r2:immich-backups/originals/ ==="
+                  rclone sync /data/upload r2:immich-backups/originals \
+                    --backup-dir "r2:immich-backups/trash/${date_prefix}" \
+                    --suffix "-${timestamp}" \
+                    --fast-list \
+                    --transfers 4 \
+                    --checkers 8 \
+                    --tpslimit 50 \
+                    --bwlimit 8M \
+                    --retries 10 \
+                    --low-level-retries 20 \
+                    --stats-one-line \
+                    --stats 1m
+
+                  echo "=== upload PostgreSQL dump ==="
+                  rclone copyto /backup/immich.dump \
+                    "r2:immich-backups/db/immich-${timestamp}.dump" \
+                    --retries 10
+
+                  echo "=== verify dump is readable ==="
+                  rclone cat --count 4 "r2:immich-backups/db/immich-${timestamp}.dump" >/dev/null
+                  echo "done"
+              env:
+                - name: HOME
+                  value: /tmp
+                - name: RCLONE_CONFIG_R2_NO_CHECK_BUCKET
+                  value: "true"
+              envFrom:
+                - secretRef:
+                    name: immich-backup-r2
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 65532
+                runAsGroup: 65532
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  cpu: 1000m
+                  memory: 1Gi
+              volumeMounts:
+                - name: originals
+                  mountPath: /data/upload
+                  readOnly: true
+                - name: backup
+                  mountPath: /backup
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: originals
+              persistentVolumeClaim:
+                claimName: immich-library-local
+                readOnly: true
+            - name: backup
+              emptyDir:
+                sizeLimit: 2Gi
+            - name: tmp
+              emptyDir:
+                sizeLimit: 128Mi
