@@ -287,21 +287,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.payloadSize\") + tolong(\"max.metadataSize\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "$sum([max.payloadSize, max.metadataSize])",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "authentik-backups",
@@ -309,21 +319,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.payloadSize\") + tolong(\"max.metadataSize\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "$sum([max.payloadSize, max.metadataSize])",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "immich-backups",
@@ -331,21 +351,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.payloadSize\") + tolong(\"max.metadataSize\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "$sum([max.payloadSize, max.metadataSize])",
+                  "text": "size",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             }
           ],
           "fieldConfig": {
@@ -468,21 +498,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.objectCount\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "max.objectCount",
+                  "text": "objects",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "authentik-backups",
@@ -490,21 +530,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.objectCount\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "max.objectCount",
+                  "text": "objects",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "immich-backups",
@@ -512,21 +562,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.objectCount\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2StorageAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "max.objectCount",
+                  "text": "objects",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             }
           ],
           "fieldConfig": {
@@ -631,7 +691,7 @@ data:
           "id": 6,
           "type": "timeseries",
           "title": "Class A operations (writes/lists) per bucket",
-          "description": "Sum of Class A R2 operations (PutObject, UploadPart, ListObjects, \u2026) per bucket.",
+          "description": "Sum of Class A R2 operations per bucket (PutObject, UploadPart, ListObjects, \u2026).",
           "datasource": {
             "type": "yesoreyeram-infinity-datasource",
             "uid": "cloudflare-r2"
@@ -649,21 +709,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2OperationsAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "sum.requests",
+                  "text": "requests",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "authentik-backups",
@@ -671,21 +741,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2OperationsAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "sum.requests",
+                  "text": "requests",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "immich-backups",
@@ -693,21 +773,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2OperationsAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "sum.requests",
+                  "text": "requests",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             }
           ],
           "fieldConfig": {
@@ -811,7 +901,7 @@ data:
           "id": 7,
           "type": "timeseries",
           "title": "Class B operations (reads/heads) per bucket",
-          "description": "Sum of Class B R2 operations (GetObject, HeadObject, \u2026) per bucket.",
+          "description": "Sum of Class B R2 operations per bucket (GetObject, HeadObject, \u2026).",
           "datasource": {
             "type": "yesoreyeram-infinity-datasource",
             "uid": "cloudflare-r2"
@@ -829,21 +919,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2OperationsAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "sum.requests",
+                  "text": "requests",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "authentik-backups",
@@ -851,21 +951,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2OperationsAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "sum.requests",
+                  "text": "requests",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             },
             {
               "refId": "immich-backups",
@@ -873,21 +983,31 @@ data:
                 "type": "yesoreyeram-infinity-datasource",
                 "uid": "cloudflare-r2"
               },
-              "type": "json",
-              "parser": "uql",
+              "type": "graphql",
+              "parser": "backend",
               "source": "url",
               "format": "timeseries",
               "url": "",
               "url_options": {
                 "method": "POST",
-                "body_type": "raw",
-                "body_content_type": "application/json",
-                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}}"
+                "body_type": "graphql",
+                "body_graphql_query": "query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}",
+                "body_graphql_variables": "{\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}"
               },
-              "root_selector": "",
-              "columns": [],
-              "filters": [],
-              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+              "root_selector": "data.viewer.accounts[0].r2OperationsAdaptiveGroups",
+              "columns": [
+                {
+                  "selector": "dimensions.datetime",
+                  "text": "time",
+                  "type": "timestamp"
+                },
+                {
+                  "selector": "sum.requests",
+                  "text": "requests",
+                  "type": "number"
+                }
+              ],
+              "filters": []
             }
           ],
           "fieldConfig": {
@@ -1027,6 +1147,6 @@ data:
       "timezone": "browser",
       "title": "Homelab R2 Backups",
       "uid": "homelab-r2-backups",
-      "version": 1,
+      "version": 2,
       "weekStart": ""
     }
