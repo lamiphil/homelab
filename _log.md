@@ -5,6 +5,26 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - Dashboard Cluster Resources
+
+**2026-11-19 | 17:02**
+
+Nouveau dashboard Grafana `Homelab Cluster Resources` (UID `homelab-cluster-resources`) pour la consommation de ressources, filtrable par noeud et par namespace. Il complete le dashboard existant `Homelab Cluster Health` (laisse intact) : une regarde la sante, l'autre la consommation.
+
+- ConfigMap `clusters/homelab/monitoring/kube-prometheus-stack/cluster-resources-dashboard.yaml` (label `grafana_dashboard=1`), ajoutee a `clusters/homelab/kustomization.yaml` juste apres la ConfigMap health.
+- Variables `node` et `namespace` (multi-select, option All), construites avec `label_values(node_uname_info, nodename)` et `label_values(kube_pod_info, namespace)`. La variable node ne liste que les trois noeuds vivants (magos, minipc, datavault) ; les anciens hostnames encore presents dans l'etiquette brute `nodename` de Prometheus sont exclus.
+- Timezone navigateur, plage par defaut 6 h, rafraichissement 30 s, seuils communs 75 %/90 %.
+- 14 panneaux sur un ecran bureau (grid 24, hauteur ~35) :
+  - ligne 1 : cinq cartes (CPU cluster %, RAM cluster %, disque racine max %, pods CPU filtres, pods RAM filtres) ;
+  - ligne 2 : CPU, RAM et I/O reseau par noeud (TX dessine en negatif) ;
+  - ligne 3 : systemes de fichiers par noeud/mountpoint, table PVC filtree par namespace ;
+  - ligne 4 : CPU et memoire des pods en requests vs limits vs utilisation reelle ;
+  - ligne 5 : tables de restarts (increase 1 h) et d'OOMKills (changes 24 h).
+- Les metriques node-exporter sont jointes a `node_uname_info` par `on(instance) group_left(nodename)` puis filtrees sur `$node`. Les panneaux pods utilisent les etiquettes `namespace` et `node` deja presentes sur cAdvisor et kube-state-metrics, donc filtrent les deux variables sans jointure.
+- Les volumes hostPath (/srv sur minipc, /datavault sur datavault, /srv/praxis et /srv/authentik) n'apparaissent pas dans `kubelet_volume_stats_*` : le panneau systemes de fichiers par noeud couvre leur usage.
+- Liens croises : le nouveau dashboard pointe vers `Homelab Cluster Health`. L'ancien n'est pas modifie.
+- Validation : chaque requete PromQL interrogee a Prometheus via `kubectl port-forward`, kustomize rendu complet, `kubectl apply --dry-run=server` sur la ConfigMap, parsing JSON et `git diff --check` OK. Aucun `kubectl apply` persistant.
+
 ## 2026-11-19 - Sauvegarde Immich vers R2
 
 **2026-11-19 | 16:40**

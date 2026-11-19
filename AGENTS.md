@@ -92,14 +92,18 @@ Praxis SQLite (read-only) -----------> Grafana
 
 - Grafana is pinned to `datavault`. It reads the live Praxis database through the `frser-sqlite-datasource` plugin (pinned to `4.0.6`, datasource UID `praxis-sqlite`, `mode=ro`).
 - The read-only PV `praxis-data-grafana` mounts `datavault:/srv/praxis` at `/var/lib/praxis`. Grafana gets supplemental group `65532`, and `/srv/praxis` must be mode `750`.
-- Dashboards are ConfigMaps labeled `grafana_dashboard=1`: `Homelab Cluster Health` and `Praxis — Habitudes` (UID `praxis-habits`).
+- Grafana also queries the Cloudflare GraphQL Analytics API through the `yesoreyeram-infinity-datasource` plugin (pinned to `4.1.8`, datasource UID `cloudflare-r2`). The bearer token is read from env var `CLOUDFLARE_API_TOKEN`, loaded by `envFromSecrets` from `grafana-cloudflare-r2` and substituted into `secureJsonData.httpHeaderValue1` at provisioning time.
+- Dashboards are ConfigMaps labeled `grafana_dashboard=1`: `Homelab Cluster Health` (UID `homelab-cluster-health`), `Homelab Cluster Resources` (UID `homelab-cluster-resources`), `Praxis — Habitudes` (UID `praxis-habits`), and `Homelab R2 Backups` (UID `homelab-r2-backups`). The chart's bundled dashboards stay disabled (`grafana.defaultDashboardsEnabled=false`).
+- `Homelab Cluster Resources` covers CPU, RAM, storage, network I/O, requests vs limits vs actual, pod restarts, and OOMKills. Grafana template variables `node` and `namespace` are multi-select with `All`. Node-exporter metrics are joined to `node_uname_info` via `on(instance) group_left(nodename)` so they filter by `$node`; cAdvisor and kube-state-metrics series already carry `namespace` and `node`. HostPath volumes do not appear in `kubelet_volume_stats_*`; the per-node filesystem panel covers `/srv` (minipc) and `/datavault` (datavault).
 - In `Praxis — Habitudes`, an unrecorded day is a gap and breaks streaks. Streaks count from today if today is saved, otherwise from yesterday. Habits appear only on the days they were active.
+- `Homelab R2 Backups` shows storage size, object count, and Class A/B operations per bucket for `praxis-backups`, `authentik-backups`, and `immich-backups`, plus backup freshness per CronJob from `kube_cronjob_status_last_successful_time` (green <28 h, yellow <36 h, red beyond). The Cloudflare account tag is stored as a hidden dashboard constant, not as a secret.
 
 ## Secrets Management
 
 - SOPS + age encrypts files matching `*-secret.sops.yaml`.
 - Flux decrypts secrets with the `sops-age` Secret in `flux-system`.
-- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich/immich-db-secret.sops.yaml`, `immich/immich-backup-r2-secret.sops.yaml`, and `praxis/praxis-secret.sops.yaml`.
+- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`, `monitoring/kube-prometheus-stack/grafana-cloudflare-r2-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich/immich-db-secret.sops.yaml`, `immich/immich-backup-r2-secret.sops.yaml`, and `praxis/praxis-secret.sops.yaml`.
+- `monitoring/kube-prometheus-stack/grafana-cloudflare-r2-secret.sops.yaml` holds a Cloudflare token scoped to **Account Analytics: Read** (via the "Read analytics & logs" template). It is used only by Grafana's Cloudflare R2 datasource and has no access to R2 bucket contents.
 - `authentik/authentik-backup-r2-secret.sops.yaml` contains a token limited to the `authentik-backups` bucket.
 - `cert-manager/cloudflare-api-token-secret.sops.yaml` holds a Cloudflare token limited to `Zone:DNS:Edit` and `Zone:Zone:Read` on `lamiphil.dev`.
 

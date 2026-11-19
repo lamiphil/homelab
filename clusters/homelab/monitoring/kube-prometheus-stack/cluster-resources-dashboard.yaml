@@ -1,0 +1,1484 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homelab-cluster-resources-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  homelab-cluster-resources.json: |
+    {
+      "annotations": {
+        "list": []
+      },
+      "description": "Cluster-wide resource usage filterable by Node and Namespace. Node-level CPU, RAM, disk, and network come from node-exporter and filter by $node. Pod-level panels come from cAdvisor and kube-state-metrics and filter by both variables. Watchdog and the k3s false-positive controller/scheduler/proxy alerts are not reflected here.",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [
+        {
+          "title": "Homelab Cluster Health",
+          "type": "link",
+          "url": "/d/homelab-cluster-health/homelab-cluster-health",
+          "tooltip": "One-screen cluster health overview",
+          "icon": "external link",
+          "targetBlank": false
+        }
+      ],
+      "liveNow": false,
+      "panels": [
+        {
+          "id": 1,
+          "type": "stat",
+          "title": "Cluster CPU used",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 5,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "1 - (sum(rate(node_cpu_seconds_total{mode=\"idle\"}[5m]) * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"}) / sum(count by (cpu, instance) (node_cpu_seconds_total{mode=\"idle\"}) * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"}))",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "decimals": 1,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 75
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "mappings": [],
+              "min": 0,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto"
+          },
+          "description": "Share of allocatable CPU in use across the nodes matching $node."
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "Cluster RAM used",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 5,
+            "y": 0,
+            "w": 5,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "sum((node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"}) / sum(node_memory_MemTotal_bytes * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "decimals": 1,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 75
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "mappings": [],
+              "min": 0,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto"
+          },
+          "description": "Working-set memory across the nodes matching $node."
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "Root filesystem used (max)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 10,
+            "y": 0,
+            "w": 5,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "max((node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} - node_filesystem_avail_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"}) / node_filesystem_size_bytes{mountpoint=\"/\",fstype!~\"tmpfs|overlay\"} * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "decimals": 1,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 75
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "mappings": [],
+              "min": 0,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto"
+          },
+          "description": "Highest root filesystem usage among the nodes matching $node."
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Pods CPU (filtered)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 15,
+            "y": 0,
+            "w": 5,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\",namespace=~\"$namespace\",node=~\"$node\"}[5m]))",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "decimals": 2,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto"
+          },
+          "description": "Current CPU in cores for pods matching $namespace × $node."
+        },
+        {
+          "id": 5,
+          "type": "stat",
+          "title": "Pods RAM (filtered)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 20,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\",namespace=~\"$namespace\",node=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "decimals": 2,
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "textMode": "auto"
+          },
+          "description": "Working-set memory for pods matching $namespace × $node."
+        },
+        {
+          "id": 6,
+          "type": "timeseries",
+          "title": "Node CPU usage %",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 4,
+            "w": 8,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "(1 - avg by (nodename) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m]) * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"}))",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "{{nodename}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1.5,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "pointSize": 4,
+                "stacking": {
+                  "mode": "none"
+                },
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "line"
+                }
+              },
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.75
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.9
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            }
+          },
+          "description": "Per-node CPU usage (1 - idle)."
+        },
+        {
+          "id": 7,
+          "type": "timeseries",
+          "title": "Node memory usage %",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 8,
+            "y": 4,
+            "w": 8,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "((node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "{{nodename}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1.5,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "pointSize": 4,
+                "stacking": {
+                  "mode": "none"
+                },
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "line"
+                }
+              },
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.75
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.9
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            }
+          },
+          "description": "Per-node working-set memory ratio."
+        },
+        {
+          "id": 8,
+          "type": "timeseries",
+          "title": "Node network I/O",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 16,
+            "y": 4,
+            "w": 8,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "sum by (nodename) (rate(node_network_receive_bytes_total{device!~\"lo|veth.*|cali.*|flannel.*|cni.*|docker.*|tailscale.*|wg.*\"}[5m]) * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "{{nodename}} RX",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "-sum by (nodename) (rate(node_network_transmit_bytes_total{device!~\"lo|veth.*|cali.*|flannel.*|cni.*|docker.*|tailscale.*|wg.*\"}[5m]) * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"})",
+              "refId": "B",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "{{nodename}} TX",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Bps",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1.5,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "pointSize": 4,
+                "stacking": {
+                  "mode": "none"
+                },
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "scaleDistribution": {
+                  "type": "linear"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            }
+          },
+          "description": "Physical-interface receive and transmit per node. TX drawn below zero."
+        },
+        {
+          "id": 9,
+          "type": "timeseries",
+          "title": "Node filesystems used %",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 12,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "((node_filesystem_size_bytes{fstype!~\"tmpfs|overlay|squashfs|ramfs|fuse.*\",mountpoint!~\"/run.*|/var/run.*|/boot.*|/snap.*|/dev.*|/sys.*|/proc.*\"} - node_filesystem_avail_bytes) / node_filesystem_size_bytes * on(instance) group_left(nodename) node_uname_info{nodename=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "{{nodename}} {{mountpoint}}",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1.5,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "pointSize": 4,
+                "stacking": {
+                  "mode": "none"
+                },
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "thresholdsStyle": {
+                  "mode": "line"
+                }
+              },
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.75
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.9
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull"
+              ]
+            }
+          },
+          "description": "Filesystem usage per node and mountpoint. HostPath-backed data lives under /srv (minipc) and /datavault (datavault)."
+        },
+        {
+          "id": 10,
+          "type": "table",
+          "title": "PVC usage (namespace filter)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 12,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=~\"$namespace\"})",
+              "refId": "Used",
+              "editorMode": "code",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace=~\"$namespace\"})",
+              "refId": "Capacity",
+              "editorMode": "code",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=~\"$namespace\"} / kubelet_volume_stats_capacity_bytes)",
+              "refId": "Use %",
+              "editorMode": "code",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Used"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "bytes"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Capacity"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "bytes"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Use %"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percentunit"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 1
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background",
+                      "mode": "gradient"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "orange",
+                          "value": 0.75
+                        },
+                        {
+                          "color": "red",
+                          "value": 0.9
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ]
+            }
+          },
+          "description": "Kubelet-reported PersistentVolumeClaim usage. HostPath volumes do not appear here; see node filesystems panel.",
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "metrics_path": true,
+                  "service": true,
+                  "node": true
+                },
+                "indexByName": {
+                  "namespace": 0,
+                  "persistentvolumeclaim": 1,
+                  "Value #Used": 2,
+                  "Value #Capacity": 3,
+                  "Value #Use %": 4
+                },
+                "renameByName": {
+                  "namespace": "Namespace",
+                  "persistentvolumeclaim": "PVC",
+                  "Value #Used": "Used",
+                  "Value #Capacity": "Capacity",
+                  "Value #Use %": "Use %"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": "timeseries",
+          "title": "Pod CPU: requests vs limits vs actual",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 20,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\",namespace=~\"$namespace\",node=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "Requests",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\",namespace=~\"$namespace\",node=~\"$node\"})",
+              "refId": "B",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "Limits",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\",namespace=~\"$namespace\",node=~\"$node\"}[5m]))",
+              "refId": "C",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "Actual",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1.5,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "pointSize": 4,
+                "stacking": {
+                  "mode": "none"
+                },
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "scaleDistribution": {
+                  "type": "linear"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "mean",
+                "max"
+              ]
+            }
+          },
+          "description": "Sum over pods matching $namespace × $node. Requests should sit above actual; limits should sit above requests."
+        },
+        {
+          "id": 12,
+          "type": "timeseries",
+          "title": "Pod memory: requests vs limits vs actual",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 12,
+            "y": 20,
+            "w": 12,
+            "h": 8
+          },
+          "targets": [
+            {
+              "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\",namespace=~\"$namespace\",node=~\"$node\"})",
+              "refId": "A",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "Requests",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\",namespace=~\"$namespace\",node=~\"$node\"})",
+              "refId": "B",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "Limits",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            },
+            {
+              "expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\",namespace=~\"$namespace\",node=~\"$node\"})",
+              "refId": "C",
+              "editorMode": "code",
+              "range": true,
+              "instant": false,
+              "legendFormat": "Actual",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1.5,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "pointSize": 4,
+                "stacking": {
+                  "mode": "none"
+                },
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "scaleDistribution": {
+                  "type": "linear"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "mean",
+                "max"
+              ]
+            }
+          },
+          "description": "Working-set memory of pods matching the filters, compared to the sum of container requests and limits."
+        },
+        {
+          "id": 13,
+          "type": "table",
+          "title": "Pod restarts (last 1h)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 28,
+            "w": 14,
+            "h": 7
+          },
+          "targets": [
+            {
+              "expr": "sum by (namespace, pod, node) (increase(kube_pod_container_status_restarts_total{namespace=~\"$namespace\"}[1h]) * on (namespace, pod) group_left(node) kube_pod_info{node=~\"$node\"}) > 0",
+              "refId": "A",
+              "editorMode": "code",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Restarts (1h)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background",
+                      "mode": "gradient"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "green",
+                          "value": null
+                        },
+                        {
+                          "color": "orange",
+                          "value": 1
+                        },
+                        {
+                          "color": "red",
+                          "value": 3
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ]
+            }
+          },
+          "description": "Pods that restarted in the last hour, after $namespace and $node filters. Rows appear only when a restart occurred.",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true
+                },
+                "indexByName": {
+                  "namespace": 0,
+                  "pod": 1,
+                  "node": 2,
+                  "Value": 3
+                },
+                "renameByName": {
+                  "namespace": "Namespace",
+                  "pod": "Pod",
+                  "node": "Node",
+                  "Value": "Restarts (1h)"
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "field": "Restarts (1h)",
+                    "desc": true
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "type": "table",
+          "title": "OOMKills (last 24h)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "x": 14,
+            "y": 28,
+            "w": 10,
+            "h": 7
+          },
+          "targets": [
+            {
+              "expr": "sum by (namespace, pod, container, node) (changes(kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\",namespace=~\"$namespace\"}[24h]) * on (namespace, pod) group_left(node) kube_pod_info{node=~\"$node\"}) > 0",
+              "refId": "A",
+              "editorMode": "code",
+              "range": false,
+              "instant": true,
+              "format": "table",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "OOMKills (24h)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-background",
+                      "mode": "gradient"
+                    }
+                  },
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "orange",
+                          "value": null
+                        },
+                        {
+                          "color": "red",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm",
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ]
+            }
+          },
+          "description": "Containers whose last terminated reason flipped to OOMKilled during the last 24 hours, filtered by $namespace and $node.",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "reason": true
+                },
+                "indexByName": {
+                  "namespace": 0,
+                  "pod": 1,
+                  "container": 2,
+                  "node": 3,
+                  "Value": 4
+                },
+                "renameByName": {
+                  "namespace": "Namespace",
+                  "pod": "Pod",
+                  "container": "Container",
+                  "node": "Node",
+                  "Value": "OOMKills (24h)"
+                }
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "field": "OOMKills (24h)",
+                    "desc": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "style": "dark",
+      "tags": [
+        "homelab",
+        "kubernetes",
+        "resources"
+      ],
+      "templating": {
+        "list": [
+          {
+            "name": "node",
+            "label": "Node",
+            "type": "query",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "refresh": 2,
+            "sort": 1,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".+",
+            "query": {
+              "query": "label_values(node_uname_info, nodename)",
+              "refId": "node"
+            },
+            "current": {
+              "text": [
+                "All"
+              ],
+              "value": [
+                "$__all"
+              ],
+              "selected": true
+            },
+            "hide": 0,
+            "regex": "",
+            "skipUrlSync": false
+          },
+          {
+            "name": "namespace",
+            "label": "Namespace",
+            "type": "query",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "refresh": 2,
+            "sort": 1,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".+",
+            "query": {
+              "query": "label_values(kube_pod_info, namespace)",
+              "refId": "namespace"
+            },
+            "current": {
+              "text": [
+                "All"
+              ],
+              "value": [
+                "$__all"
+              ],
+              "selected": true
+            },
+            "hide": 0,
+            "regex": "",
+            "skipUrlSync": false
+          }
+        ]
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Homelab Cluster Resources",
+      "uid": "homelab-cluster-resources",
+      "version": 1,
+      "weekStart": ""
+    }
