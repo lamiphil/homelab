@@ -43,9 +43,35 @@ spec:
         kubernetes.io/hostname: datavault
       securityContext:
         supplementalGroups: [65532]
+      # Authentik OIDC client ID and secret (GF_AUTH_GENERIC_OAUTH_CLIENT_*).
+      envFromSecrets:
+        - name: grafana-oidc
       grafana.ini:
         plugins:
           preinstall_sync: frser-sqlite-datasource@4.0.6
+        server:
+          root_url: https://grafana.lamiphil.dev
+        security:
+          # Grafana storage is ephemeral: the local admin is recreated on each
+          # start. Its email matches the Authentik user so SSO links to it.
+          admin_email: philippe.lamy@lamiphil.dev
+        auth:
+          oauth_allow_insecure_email_lookup: true
+          signout_redirect_url: https://auth.lamiphil.dev/application/o/grafana/end-session/
+        auth.generic_oauth:
+          enabled: true
+          name: Authentik
+          allow_sign_up: true
+          use_pkce: true
+          scopes: openid profile email
+          auth_url: https://auth.lamiphil.dev/application/o/authorize/
+          token_url: https://auth.lamiphil.dev/application/o/token/
+          api_url: https://auth.lamiphil.dev/application/o/userinfo/
+          login_attribute_path: preferred_username
+          email_attribute_path: email
+          name_attribute_path: name
+          role_attribute_path: contains(groups[*], 'homelab-users') && 'Admin' || 'Viewer'
+          role_attribute_strict: false
       extraVolumes:
         - name: praxis-data
           existingClaim: praxis-data-grafana

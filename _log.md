@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 03:51**
+
+Grafana : connexion OIDC native avec Authentik (application `grafana`, RS256, groupe `homelab-users` -> rôle Admin). Le client ID et le secret sont dans `grafana-oidc-secret.sops.yaml`. Le stockage de Grafana est éphémère, donc l'admin local est recréé à chaque démarrage avec l'email `philippe.lamy@lamiphil.dev` pour que la connexion SSO s'y rattache. Le formulaire local reste disponible en secours. Immich passe aussi en OIDC (application `immich`), configuré dans l'interface d'administration d'Immich.
+
 **2026-11-19 | 03:36**
 
 Homepage n'est plus derrière Authentik, à la demande de Philippe. Prometheus, Alertmanager, File Browser et Praxis passent maintenant par le ForwardAuth Authentik; le BasicAuth du monitoring et son Secret SOPS sont supprimés. Les LoadBalancers `.71`, `.72` et `.96` deviennent ClusterIP pour supprimer tout contournement. File Browser et Praxis gardent leur propre connexion pour l'instant. Grafana et Immich passeront en OIDC natif.

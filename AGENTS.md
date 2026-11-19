@@ -48,6 +48,7 @@ Prometheus, Alertmanager, File Browser, and Praxis have no dedicated IP: Traefik
 - Traefik Middleware `authentik-forward-auth` (one copy per namespace, in `authentik/forward-auth-middlewares.yaml`) protects Prometheus, Alertmanager, File Browser, and Praxis.
 - Homepage is intentionally not protected. Never put the middleware on Authentik's own Ingress.
 - A protected service must not keep a LoadBalancer IP: it would bypass Authentik.
+- Grafana and Immich use native OIDC (Authentik applications `grafana` and `immich`, RS256 signing key). Grafana's client credentials are in `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`; Immich's OAuth settings live in Immich's admin UI. Both keep their local login as a break-glass path.
 
 MetalLB uses `192.168.42.60-192.168.42.100`.
 
@@ -100,7 +101,7 @@ Praxis SQLite (read-only) -----------> Grafana
 
 - SOPS + age encrypts files matching `*-secret.sops.yaml`.
 - Flux decrypts secrets with the `sops-age` Secret in `flux-system`.
-- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich-db-secret.sops.yaml`, and `praxis-secret.sops.yaml`.
+- Encrypted application secrets include `authentik/authentik-secret.sops.yaml`, `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`, `authentik/authentik-smtp-secret.sops.yaml`, `immich-db-secret.sops.yaml`, and `praxis-secret.sops.yaml`.
 - `authentik/authentik-backup-r2-secret.sops.yaml` contains a token limited to the `authentik-backups` bucket.
 - `cert-manager/cloudflare-api-token-secret.sops.yaml` holds a Cloudflare token limited to `Zone:DNS:Edit` and `Zone:Zone:Read` on `lamiphil.dev`.
 
