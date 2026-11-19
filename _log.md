@@ -5,6 +5,16 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - Coût mensuel R2 et correction de la taille stockée
+
+**2026-11-19 | 17:40**
+
+Ajout de quatre panneaux « Projected monthly storage » au dashboard `Homelab R2 Backups` (Praxis, Authentik, Immich, plus un total compte). Le coût est calculé à partir du dernier `max.payloadSize` renvoyé par l'API GraphQL Cloudflare, multiplié par `0,015 / 1e9` via une transformation Grafana `calculateField` (binary). Le panneau total agrège les trois buckets avec `groupBy` + `reduce` et soustrait les 10 Go-mois gratuits ; une valeur négative signifie que le compte est encore sous le free tier. Les coûts d'opérations Class A/B restent cachés : ils sont négligeables pour un usage sauvegarde (quelques milliers de requêtes par mois).
+
+En vérifiant les chaînes de calcul, j'ai découvert que le parser backend d'Infinity 3.11.1 n'évalue pas les expressions JSONata (`$sum`, additions, multiplications) : il ne sait que suivre un chemin brut. Le panneau « Stored size per bucket » renvoyait donc en réalité que des `null` depuis le déploiement. J'ai basculé toutes les colonnes de taille vers `max.payloadSize` seul (metadata < 0.1 %) et déporté toute l'arithmétique côté Grafana. Les tailles courantes vues en live : praxis 148 KB, authentik 6.3 MB, immich 20.2 GB.
+
+Commit : `MONITORING - Afficher le cout mensuel R2 et corriger la taille`. AGENTS.md mis à jour pour documenter la contrainte JSONata et le modèle de coût.
+
 ## 2026-11-19 - Nettoyage de /srv/media et File Browser
 
 **2026-11-19 | 17:22**
