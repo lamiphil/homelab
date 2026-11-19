@@ -7,6 +7,21 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 09:28**
+
+Documentation : le README décrit l'accès aux services et le SSO, avec deux diagrammes draw.io à icônes (`docs/homelab-access` et `docs/homelab-topology`, sources `.drawio` et exports `.drawio.png` modifiables). Les anciens diagrammes de la topologie à six nœuds sont supprimés.
+
+**2026-11-19 | 04:13**
+
+Bilan du déploiement SSO Authentik :
+
+- Homepage reste ouvert. Prometheus, Alertmanager, File Browser et Praxis passent par le ForwardAuth (`b9a0ebe`). Grafana (`d1f3a6e`) et Immich (web et mobile) utilisent l'OIDC natif.
+- Plus aucun service protégé n'a d'IP MetalLB : `.70`, `.71`, `.72`, `.80` et `.96` sont fermées (`171fbdd`, `8f07161`). Seuls Traefik `.60` et Homepage `.61` gardent une IP.
+- La configuration faite dans l'interface d'Authentik n'est pas dans Git : le groupe `homelab-users`, l'utilisateur `lamiphil`, le fournisseur proxy `homelab-forward-auth` et l'application `Homelab` (liés à l'outpost intégré), et les fournisseurs OAuth2 `grafana` et `immich` (confidentiels, Authorization Code et Refresh token seulement, clé de signature auto-signée, consentement implicite). Seule la sauvegarde nocturne R2 d'Authentik permet de la restaurer.
+- Les réglages OAuth d'Immich sont aussi dans son interface d'administration, donc ils dépendent de la base Immich et non de Git.
+- Points de secours : le formulaire local de Grafana, `https://immich.lamiphil.dev/auth/login?autoLaunch=0`, et `ak create_recovery_key 10 akadmin` dans le worker Authentik.
+- Reste à faire : enrôler un authentificateur (TOTP et jetons statiques) pour `lamiphil`, puis rendre la MFA obligatoire dans l'étape `default-authentication-mfa-validation`. Optionnel : retirer la deuxième connexion de File Browser et de Praxis.
+
 **2026-11-19 | 04:05**
 
 L'application mobile Immich utilise maintenant `https://immich.lamiphil.dev` avec connexion Authentik. Le LoadBalancer Immich `.80` devient ClusterIP : seuls Traefik `.60` et Homepage `.61` gardent une IP MetalLB.
