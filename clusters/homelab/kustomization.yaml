@@ -22,6 +22,7 @@ resources:
 - filebrowser/service.yaml
 - flux-system/gotk-components.yaml
 - flux-system/gotk-sync.yaml
+- homepage/authentik-middleware.yaml
 - homepage/clusterrole.yaml
 - homepage/clusterrolebinding.yaml
 - homepage/configmap.yaml

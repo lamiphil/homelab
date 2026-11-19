@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 03:26**
+
+Pilote SSO : Homepage passe par un middleware Traefik ForwardAuth vers l'outpost intégré d'Authentik (fournisseur `homelab-forward-auth`, mode domaine, cookie `lamiphil.dev`, accès réservé au groupe `homelab-users`). Le LoadBalancer `.61` reste temporairement comme retour arrière et contourne encore l'authentification.
+
 **2026-11-19 | 03:03**
 
 Flux a appliqué la configuration SMTP et redémarré le serveur et le worker Authentik sans erreur. La commande `ak test_email` a confirmé l'envoi d'un courriel à `admin@lamiphil.dev` par Fastmail.
