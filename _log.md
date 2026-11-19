@@ -25,6 +25,20 @@ File Browser ne montre plus que `Documents/` : le volume NFS est monté avec `su
 
 PV/PVC `immich-upload-local` retirés de Git (vides, plus montés depuis le 2026-11-15 ; les uploads Immich sont dans `photos/upload`). Flux les a supprimés ; le dossier vide `/srv/media/immich-upload` a été supprimé à la main sur minipc. Immich vérifié sain après le prune (4 déploiements 1/1, API OK). La première sauvegarde R2 d'Immich était encore en cours à ce moment.
 
+**2026-11-19 | 18:33**
+
+Terminé le nettoyage de `/srv/media` et la restriction de File Browser à `Documents/`.
+
+- J'ai fait l'inventaire avant toute suppression : taille, nombre de fichiers, dernière modification et workload pour chaque dossier. Chaque suppression a été confirmée dossier par dossier.
+- `Movies/`, `TV/`, `downloads/` et `.Trash-1000/` sont supprimés pour de bon (~690G). `photos/` (bibliothèque Immich live) et `lost+found/` sont intacts.
+- File Browser monte seulement `Documents/` (`44d3f59`), toujours derrière Authentik.
+- PV/PVC `immich-upload-local` retirés ; une autre session les a inclus dans `db08e8d` et `b402568` (titres `MONITORING`). Philippe a supprimé le dossier vide sur minipc.
+- Immich vérifié sain après le prune : 4 déploiements 1/1, API OK.
+
+### Prochaine étape
+
+- Vérifier que le job `immich-backup-first` (première sauvegarde R2 d'Immich) termine avec succès.
+
 ## 2026-11-19 - Tableau de bord Grafana des sauvegardes R2
 
 **2026-11-19 | 17:05**
