@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 01:58**
+
+J'ai remplacé tous les liens internes de Homepage par les endpoints HTTPS `*.lamiphil.dev` et ajouté Praxis à la section Applications.
+
 **2026-11-19 | 01:53**
 
 J'ai ajouté `homepage.lamiphil.dev` à `HOMEPAGE_ALLOWED_HOSTS` après que le test HTTPS a retourné `400 Host validation failed`.

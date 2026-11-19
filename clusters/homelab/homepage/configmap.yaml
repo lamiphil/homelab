@@ -16,21 +16,24 @@ data:
     - Applications:
         - Immich:
             icon: immich.svg
-            href: http://immich.homelab:2283
+            href: https://immich.lamiphil.dev
         - File Browser:
             icon: filebrowser.svg
-            href: http://filebrowser.homelab
+            href: https://filebrowser.lamiphil.dev
+        - Praxis:
+            icon: mdi-check-circle-outline
+            href: https://praxis.lamiphil.dev
 
     - Monitoring:
         - Grafana:
             icon: grafana.svg
-            href: http://grafana.homelab/login
+            href: https://grafana.lamiphil.dev/login
         - Prometheus:
             icon: prometheus.svg
-            href: http://192.168.42.71:9090
+            href: https://prometheus.lamiphil.dev
         - Alertmanager:
             icon: alertmanager.svg
-            href: http://192.168.42.72:9093
+            href: https://alertmanager.lamiphil.dev
   bookmarks.yaml: |
     - Reading:
         - TheNewStack:
