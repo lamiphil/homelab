@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 04:05**
+
+L'application mobile Immich utilise maintenant `https://immich.lamiphil.dev` avec connexion Authentik. Le LoadBalancer Immich `.80` devient ClusterIP : seuls Traefik `.60` et Homepage `.61` gardent une IP MetalLB.
+
 **2026-11-19 | 03:59**
 
 Grafana SSO validé; Immich OAuth activé dans l'interface (auto-launch actif, connexion par mot de passe via `/auth/login?autoLaunch=0`) et compte existant lié. Le LoadBalancer Grafana `.70` devient ClusterIP. Immich garde `.80` tant que l'application mobile n'utilise pas `https://immich.lamiphil.dev`.

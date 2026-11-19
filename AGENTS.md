@@ -36,9 +36,8 @@ clusters/homelab/
 |----|---------|
 | `192.168.42.60` | Traefik |
 | `192.168.42.61` | Homepage |
-| `192.168.42.80` | Immich |
 
-Grafana, Prometheus, Alertmanager, File Browser, and Praxis have no dedicated IP: Traefik serves them at `https://<service>.lamiphil.dev`. UDM private DNS maps those names to `192.168.42.60`.
+Immich, Grafana, Prometheus, Alertmanager, File Browser, and Praxis have no dedicated IP: Traefik serves them at `https://<service>.lamiphil.dev`. UDM private DNS maps those names to `192.168.42.60`.
 
 ## SSO (Authentik)
 
@@ -46,7 +45,7 @@ Grafana, Prometheus, Alertmanager, File Browser, and Praxis have no dedicated IP
 - ForwardAuth: Proxy Provider `homelab-forward-auth` (domain level, cookie domain `lamiphil.dev`), application `Homelab`, served by the embedded outpost. Access is bound to `homelab-users`.
 - Traefik Middleware `authentik-forward-auth` (one copy per namespace, in `authentik/forward-auth-middlewares.yaml`) protects Prometheus, Alertmanager, File Browser, and Praxis.
 - Homepage is intentionally not protected. Never put the middleware on Authentik's own Ingress.
-- A protected service must not keep a LoadBalancer IP: it would bypass Authentik. Immich still keeps `.80` until the mobile app uses `https://immich.lamiphil.dev`.
+- A protected service must not keep a LoadBalancer IP: it would bypass Authentik.
 - Grafana and Immich use native OIDC (Authentik applications `grafana` and `immich`, RS256 signing key). Grafana's client credentials are in `monitoring/kube-prometheus-stack/grafana-oidc-secret.sops.yaml`; Immich's OAuth settings live in Immich's admin UI. Both keep their local login as a break-glass path.
 
 MetalLB uses `192.168.42.60-192.168.42.100`.
