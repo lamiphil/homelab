@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentik-postgresql
+  namespace: authentik
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: authentik-postgresql
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: authentik-postgresql
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/hostname: datavault
+      containers:
+        - name: postgresql
+          image: postgres:18.1-alpine
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-secret
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - name: postgresql
+              containerPort: 5432
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          startupProbe:
+            exec:
+              command: [pg_isready, -U, authentik, -d, authentik]
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command: [pg_isready, -U, authentik, -d, authentik]
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: [pg_isready, -U, authentik, -d, authentik]
+            periodSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: data
+          hostPath:
+            path: /srv/authentik/postgresql/data
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentik-postgresql
+  namespace: authentik
+spec:
+  selector:
+    app.kubernetes.io/name: authentik-postgresql
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql

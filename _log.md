@@ -7,6 +7,12 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 02:16**
+
+J'ai ajouté Authentik `2026.8.5` à `auth.lamiphil.dev` comme futur fournisseur d'identité. Le serveur, le worker et PostgreSQL sont épinglés sur `datavault`; les secrets sont chiffrés avec SOPS, et les données persistantes restent sous `/srv/authentik`.
+
+Un CronJob crée chaque nuit un dump PostgreSQL validé et une archive des fichiers Authentik, puis les envoie dans le bucket R2 dédié `authentik-backups`, dont la rétention est gérée par une règle de cycle de vie de 30 jours. L'activation MFA et les intégrations SSO seront configurées après la création du premier compte administrateur.
+
 **2026-11-19 | 01:58**
 
 J'ai remplacé tous les liens internes de Homepage par les endpoints HTTPS `*.lamiphil.dev` et ajouté Praxis à la section Applications.

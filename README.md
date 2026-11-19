@@ -13,7 +13,7 @@ GitOps-powered home Kubernetes cluster built with k3s, Flux CD, SOPS/age, MetalL
   - `magos` — single control plane and schedulable worker
   - `minipc` — worker for Immich and File Browser
   - `datavault` — worker and storage node
-- **Applications**: Homepage, Immich, File Browser, Praxis, Grafana, Prometheus, Alertmanager
+- **Applications**: Authentik, Homepage, Immich, File Browser, Praxis, Grafana, Prometheus, Alertmanager
 - **Service exposure**: Traefik at `192.168.42.60`, MetalLB pool `192.168.42.60-192.168.42.100`
 
 `ubuntuserver`, `pi`, and `archlinux` were retired on 2026-11-15.
