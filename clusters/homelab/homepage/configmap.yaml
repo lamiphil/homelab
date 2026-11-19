@@ -66,6 +66,24 @@ data:
             - icon: facebook-messenger.svg
               href: https://messenger.com
               description: ""
+
+    - Infrastructure:
+        - Cloudflare:
+            - icon: cloudflare.svg
+              href: https://dash.cloudflare.com
+              description: ""
+        - Cloudflare DNS:
+            - icon: cloudflare.svg
+              href: https://dash.cloudflare.com
+              description: "lamiphil.dev zone"
+        - Cloudflare R2:
+            - icon: cloudflare.svg
+              href: https://dash.cloudflare.com
+              description: "praxis-backups · authentik-backups"
+        - Fastmail:
+            - icon: mail.svg
+              href: https://app.fastmail.com
+              description: "lamiphil.dev mailbox"
   widgets.yaml: |
     - kubernetes:
         cluster:

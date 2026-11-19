@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 16:10**
+
+Homepage : ajout d'une section Infrastructure avec trois liens vers le dashboard Cloudflare (dashboard, DNS de la zone lamiphil.dev, R2 buckets praxis-backups et authentik-backups). Homepage n'est pas protégée par Authentik ; la section utilise l'icône cloudflare.svg fournie par Homepage.
+
 **2026-11-19 | 09:28**
 
 Documentation : le README décrit l'accès aux services et le SSO, avec deux diagrammes draw.io à icônes (`docs/homelab-access` et `docs/homelab-topology`, sources `.drawio` et exports `.drawio.png` modifiables). Les anciens diagrammes de la topologie à six nœuds sont supprimés.
