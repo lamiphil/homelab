@@ -24,7 +24,24 @@ Ajouts GitOps :
 
 A faire cote Cloudflare avant que le job serve a quelque chose : activer la regle de cycle de vie sur prefixe `trash/` (`Delete uploaded objects: 30 days`) et, en option, `abort-incomplete-7d` sur tout le bucket. Premiere execution a declencher manuellement via `kubectl -n immich create job immich-backup-manual --from=cronjob/immich-backup` ; sur Wi-Fi minipc, prevoir ~15 h pour les 64 GiB initiaux (reprise automatique via rclone).
 
+**2026-11-19 | 16:55**
+
+Deploye le CronJob `immich-backup` (commit `6f216e5`) et declenche la premiere execution manuelle.
+
+- Flux a reconcilie `main@6f216e5` ; le Secret SOPS `immich-backup-r2` s'ouvre avec les cinq cles `RCLONE_CONFIG_R2_*`.
+- `kubectl -n immich create job immich-backup-first --from=cronjob/immich-backup` : pod `immich-backup-first-pqgkr` sur `minipc`, initContainer `dump` termine en 17 s (dump custom de 42 MB valide par `pg_restore --list`), container `upload` en cours (`rclone sync` des 64 GiB d'originaux).
+- Le `logs -f` initial a expire sur `PodInitializing` pendant le pull de l'image postgres ; le job lui-meme avance normalement.
+
+### Prochaine etape
+
+- Ajouter dans le tableau de bord R2 les regles de cycle de vie `expire-trash-30d` (prefixe `trash/`) et `abort-incomplete-7d`.
+- Surveiller la fin du premier `immich-backup-first` et confirmer les objets sous `originals/` et `db/` dans R2.
+
 ## 2026-11-19 - TLS pour les services du homelab
+
+**2026-11-19 | 16:34**
+
+Ajouté une section Infrastructure à Homepage avec les liens Cloudflare (dashboard, DNS lamiphil.dev, R2 buckets) et Fastmail. Icônes cloudflare.svg et mail.svg. Commit 7ce262c poussé et réconcilié par Flux.
 
 **2026-11-19 | 16:10**
 
