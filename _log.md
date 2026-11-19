@@ -7,6 +7,10 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 01:53**
+
+J'ai ajouté `homepage.lamiphil.dev` à `HOMEPAGE_ALLOWED_HOSTS` après que le test HTTPS a retourné `400 Host validation failed`.
+
 **2026-11-19 | 01:45**
 
 J'ai préparé la première phase de migration des services vers Traefik et HTTPS.
