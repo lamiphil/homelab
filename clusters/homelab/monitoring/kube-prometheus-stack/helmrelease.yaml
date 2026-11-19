@@ -42,12 +42,15 @@ spec:
         kubernetes.io/hostname: datavault
       securityContext:
         supplementalGroups: [65532]
-      # Authentik OIDC client ID and secret (GF_AUTH_GENERIC_OAUTH_CLIENT_*).
+      # Authentik OIDC client ID and secret (GF_AUTH_GENERIC_OAUTH_CLIENT_*)
+      # and the Cloudflare account-analytics token read by the Infinity
+      # datasource at provisioning time ($CLOUDFLARE_API_TOKEN).
       envFromSecrets:
         - name: grafana-oidc
+        - name: grafana-cloudflare-r2
       grafana.ini:
         plugins:
-          preinstall_sync: frser-sqlite-datasource@4.0.6
+          preinstall_sync: frser-sqlite-datasource@4.0.6,yesoreyeram-infinity-datasource@4.1.8
         server:
           root_url: https://grafana.lamiphil.dev
         security:
@@ -87,6 +90,21 @@ spec:
           jsonData:
             path: /var/lib/praxis/praxis.db
             pathOptions: mode=ro
+        # Cloudflare GraphQL Analytics API, used by the R2 backups dashboard.
+        # The token comes from the grafana-cloudflare-r2 Secret and Grafana
+        # substitutes $CLOUDFLARE_API_TOKEN at provisioning time.
+        - name: Cloudflare R2
+          uid: cloudflare-r2
+          type: yesoreyeram-infinity-datasource
+          access: proxy
+          url: https://api.cloudflare.com/client/v4/graphql
+          editable: false
+          jsonData:
+            allowedHosts:
+              - https://api.cloudflare.com
+            httpHeaderName1: Authorization
+          secureJsonData:
+            httpHeaderValue1: Bearer $CLOUDFLARE_API_TOKEN
 
     prometheus:
       service:

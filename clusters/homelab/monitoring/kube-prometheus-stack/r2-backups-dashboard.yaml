@@ -1,0 +1,1032 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homelab-r2-backups-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  homelab-r2-backups.json: |
+    {
+      "annotations": {
+        "list": []
+      },
+      "description": "Cloudflare R2 backup buckets: storage size, object count, Class A/B operations, and backup freshness.",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "id": 1,
+          "type": "stat",
+          "title": "Praxis \u2014 last backup age",
+          "description": "Time since the last successful backup CronJob run.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 0,
+            "y": 0
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "time() - max(kube_cronjob_status_last_successful_time{namespace=\"praxis\",cronjob=\"praxis-backup\"})",
+              "legendFormat": "",
+              "range": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 100800
+                  },
+                  {
+                    "color": "red",
+                    "value": 129600
+                  }
+                ]
+              },
+              "mappings": [
+                {
+                  "type": "special",
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "Never",
+                      "color": "red"
+                    }
+                  }
+                }
+              ],
+              "noValue": "Never"
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "horizontal",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "Authentik \u2014 last backup age",
+          "description": "Time since the last successful backup CronJob run.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 8,
+            "y": 0
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "time() - max(kube_cronjob_status_last_successful_time{namespace=\"authentik\",cronjob=\"authentik-backup\"})",
+              "legendFormat": "",
+              "range": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 100800
+                  },
+                  {
+                    "color": "red",
+                    "value": 129600
+                  }
+                ]
+              },
+              "mappings": [
+                {
+                  "type": "special",
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "Never",
+                      "color": "red"
+                    }
+                  }
+                }
+              ],
+              "noValue": "Never"
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "horizontal",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "Immich \u2014 last backup age",
+          "description": "Time since the last successful backup CronJob run.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 16,
+            "y": 0
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "time() - max(kube_cronjob_status_last_successful_time{namespace=\"immich\",cronjob=\"immich-backup\"})",
+              "legendFormat": "",
+              "range": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 100800
+                  },
+                  {
+                    "color": "red",
+                    "value": 129600
+                  }
+                ]
+              },
+              "mappings": [
+                {
+                  "type": "special",
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "Never",
+                      "color": "red"
+                    }
+                  }
+                }
+              ],
+              "noValue": "Never"
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "horizontal",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 4,
+          "type": "timeseries",
+          "title": "Stored size per bucket",
+          "description": "Max storage (payload + metadata) reported by Cloudflare R2 analytics per bucket.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 4
+          },
+          "targets": [
+            {
+              "refId": "praxis-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.payloadSize\") + tolong(\"max.metadataSize\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "authentik-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.payloadSize\") + tolong(\"max.metadataSize\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "immich-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.payloadSize\") + tolong(\"max.metadataSize\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 15,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto"
+              },
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "praxis-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Praxis"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "authentik-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Authentik"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "immich-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Immich"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "last",
+                "max",
+                "mean"
+              ],
+              "showLegend": true
+            }
+          }
+        },
+        {
+          "id": 5,
+          "type": "timeseries",
+          "title": "Object count per bucket",
+          "description": "Max objectCount reported by Cloudflare R2 analytics per bucket.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 4
+          },
+          "targets": [
+            {
+              "refId": "praxis-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\"}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.objectCount\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "authentik-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\"}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.objectCount\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "immich-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!){viewer{accounts(filter:{accountTag:$a}){r2StorageAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} max{payloadSize metadataSize objectCount}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\"}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2StorageAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"max.objectCount\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 15,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "none",
+                  "group": "A"
+                },
+                "axisPlacement": "auto"
+              },
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "praxis-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Praxis"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "authentik-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Authentik"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "immich-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Immich"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "last",
+                "max",
+                "mean"
+              ],
+              "showLegend": true
+            }
+          }
+        },
+        {
+          "id": 6,
+          "type": "timeseries",
+          "title": "Class A operations (writes/lists) per bucket",
+          "description": "Sum of Class A R2 operations (PutObject, UploadPart, ListObjects, \u2026) per bucket.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 12
+          },
+          "targets": [
+            {
+              "refId": "praxis-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "authentik-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "immich-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\", \"types\": [\"PutObject\", \"CopyObject\", \"UploadPart\", \"UploadPartCopy\", \"CompleteMultipartUpload\", \"CreateMultipartUpload\", \"ListObjects\", \"ListBuckets\", \"PutBucket\", \"LifecycleStorageTierTransition\"]}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 25,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "normal",
+                  "group": "A"
+                },
+                "axisPlacement": "auto"
+              },
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "praxis-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Praxis"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "authentik-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Authentik"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "immich-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Immich"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "sum",
+                "max"
+              ],
+              "showLegend": true
+            }
+          }
+        },
+        {
+          "id": 7,
+          "type": "timeseries",
+          "title": "Class B operations (reads/heads) per bucket",
+          "description": "Sum of Class B R2 operations (GetObject, HeadObject, \u2026) per bucket.",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "cloudflare-r2"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 12
+          },
+          "targets": [
+            {
+              "refId": "praxis-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"praxis-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "authentik-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"authentik-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            },
+            {
+              "refId": "immich-backups",
+              "datasource": {
+                "type": "yesoreyeram-infinity-datasource",
+                "uid": "cloudflare-r2"
+              },
+              "type": "json",
+              "parser": "uql",
+              "source": "url",
+              "format": "timeseries",
+              "url": "",
+              "url_options": {
+                "method": "POST",
+                "body_type": "raw",
+                "body_content_type": "application/json",
+                "body": "{\"query\": \"query($a:String!,$f:Time!,$t:Time!,$b:String!,$types:[String!]){viewer{accounts(filter:{accountTag:$a}){r2OperationsAdaptiveGroups(filter:{datetime_geq:$f,datetime_leq:$t,bucketName:$b,actionType_in:$types},limit:10000,orderBy:[datetime_ASC]){dimensions{datetime} sum{requests}}}}}\", \"variables\": {\"a\": \"$accountTag\", \"f\": \"${__from:date:iso}\", \"t\": \"${__to:date:iso}\", \"b\": \"immich-backups\", \"types\": [\"GetObject\", \"HeadObject\", \"HeadBucket\", \"UsageSummary\", \"GetBucketEncryption\", \"GetBucketLocation\", \"GetBucketCors\", \"GetBucketLifecycle\", \"GetBucketReplication\", \"GetBucketTagging\", \"GetBucketWebsite\", \"GetBucketPublicAccessBlock\", \"GetBucketObjectLock\", \"OPTIONS\"]}}"
+              },
+              "root_selector": "",
+              "columns": [],
+              "filters": [],
+              "uql": "parse-json\n| scope \"data.viewer.accounts.0.r2OperationsAdaptiveGroups\"\n| extend \"time\"=todatetime(tostring(\"dimensions.datetime\")), \"value\"=tolong(\"sum.requests\")\n| summarize \"value\"=sum(\"value\") by \"time\"\n| order by \"time\" asc"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineInterpolation": "smooth",
+                "lineWidth": 2,
+                "fillOpacity": 25,
+                "showPoints": "never",
+                "pointSize": 5,
+                "stacking": {
+                  "mode": "normal",
+                  "group": "A"
+                },
+                "axisPlacement": "auto"
+              },
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "praxis-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Praxis"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "authentik-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Authentik"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "immich-backups"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Immich"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            },
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "sum",
+                "max"
+              ],
+              "showLegend": true
+            }
+          }
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": [
+        "homelab",
+        "r2",
+        "backups"
+      ],
+      "templating": {
+        "list": [
+          {
+            "name": "accountTag",
+            "label": "Cloudflare account",
+            "type": "constant",
+            "query": "d1cd4781cee8032b3639cad8f198d1f7",
+            "current": {
+              "selected": false,
+              "text": "d1cd4781cee8032b3639cad8f198d1f7",
+              "value": "d1cd4781cee8032b3639cad8f198d1f7"
+            },
+            "options": [
+              {
+                "selected": true,
+                "text": "d1cd4781cee8032b3639cad8f198d1f7",
+                "value": "d1cd4781cee8032b3639cad8f198d1f7"
+              }
+            ],
+            "hide": 2,
+            "skipUrlSync": true
+          }
+        ]
+      },
+      "time": {
+        "from": "now-7d",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Homelab R2 Backups",
+      "uid": "homelab-r2-backups",
+      "version": 1,
+      "weekStart": ""
+    }
