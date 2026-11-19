@@ -7,6 +7,12 @@ tags: [homelab, log, kubernetes, k3s]
 
 ## 2026-11-19 - TLS pour les services du homelab
 
+**2026-11-19 | 02:32**
+
+Flux a déployé Authentik avec succès. Le HelmRelease, PostgreSQL, le serveur, le worker et le certificat `authentik-tls` sont Ready; `https://auth.lamiphil.dev/if/flow/initial-setup/` répond en HTTPS avec un certificat valide.
+
+J'ai exécuté une sauvegarde manuelle complète et vérifié dans R2 la présence de la paire PostgreSQL et fichiers Authentik. Le Job de validation a ensuite été supprimé.
+
 **2026-11-19 | 02:16**
 
 J'ai ajouté Authentik `2026.8.5` à `auth.lamiphil.dev` comme futur fournisseur d'identité. Le serveur, le worker et PostgreSQL sont épinglés sur `datavault`; les secrets sont chiffrés avec SOPS, et les données persistantes restent sous `/srv/authentik`.
