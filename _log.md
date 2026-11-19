@@ -5,6 +5,25 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - Tableau de bord Grafana des sauvegardes R2
+
+**2026-11-19 | 17:05**
+
+Objectif : visualiser dans Grafana la fraicheur, la taille, le nombre d'objets et les operations Class A/B des trois buckets R2 (`praxis-backups`, `authentik-backups`, `immich-backups`).
+
+Decision : requeter l'API Cloudflare GraphQL Analytics directement depuis Grafana via le plugin `yesoreyeram-infinity-datasource`. Aucun exporter Prometheus maintenu ne couvre `r2StorageAdaptiveGroups` / `r2OperationsAdaptiveGroups`, et l'approche Infinity reutilise exactement le pattern du plugin `frser-sqlite-datasource` (preinstall_sync + `additionalDataSources`), sans nouveau workload ni storage persistant. La fraicheur des sauvegardes reste cote Prometheus via `kube_cronjob_status_last_successful_time` (kube-state-metrics).
+
+Token dedie cree sur Cloudflare (politique "Read analytics & logs", scope compte uniquement, aucun acces aux contenus R2). Le token est lu depuis l'env `CLOUDFLARE_API_TOKEN` fourni par `grafana-cloudflare-r2`, et Grafana le substitue dans `secureJsonData.httpHeaderValue1` du datasource au provisioning (`Authorization: Bearer $CLOUDFLARE_API_TOKEN`). Le tag de compte Cloudflare n'etant pas un secret, il est fige en variable constante masquee du dashboard.
+
+Modifications GitOps :
+
+- `clusters/homelab/monitoring/kube-prometheus-stack/helmrelease.yaml` : plugin `yesoreyeram-infinity-datasource@4.1.8` ajoute a `preinstall_sync`, `grafana-cloudflare-r2` ajoute a `envFromSecrets`, et nouveau datasource `Cloudflare R2` (UID `cloudflare-r2`, URL `https://api.cloudflare.com/client/v4/graphql`, `allowedHosts` restreint a `api.cloudflare.com`).
+- `clusters/homelab/monitoring/kube-prometheus-stack/grafana-cloudflare-r2-secret.sops.yaml` : Secret SOPS portant `CLOUDFLARE_API_TOKEN`.
+- `clusters/homelab/monitoring/kube-prometheus-stack/r2-backups-dashboard.yaml` : dashboard `Homelab R2 Backups` (UID `homelab-r2-backups`, refresh 30 s, timezone browser, defaut `now-7d`). Trois stats de fraicheur (une par CronJob, seuils 28 h / 36 h), quatre graphes Cloudflare (taille, nombre d'objets, Class A, Class B) avec une serie par bucket. UQL Infinity agrege les lignes GraphQL (sum, order by time).
+- `clusters/homelab/kustomization.yaml` : enregistre les deux nouveaux fichiers.
+
+Validations avant commit : `kubectl kustomize clusters/homelab` rend la ConfigMap du dashboard ; `helm template kube-prometheus-stack-79.5.0` confirme le datasource, le plugin et l'envFrom ; appel GraphQL reel avec l'exact body d'un panneau retourne 83 points pour `praxis-backups` sur 7 jours ; Prometheus retourne les ages de sauvegarde pour `praxis-backup` et `authentik-backup` (Immich n'a pas encore eu sa premiere execution a 03:00, la carte affichera "Never" jusque-la). Deux fuites de jeton pendant la rédaction ont ete corrigees : le token a ete regenere, l'encryption SOPS est maintenant faite via stdin sans jamais ecrire de clair sur disque.
+
 ## 2026-11-19 - Dashboard Cluster Resources
 
 **2026-11-19 | 17:02**
