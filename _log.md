@@ -5,6 +5,19 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - Nettoyage des docs publiques
+
+**2026-11-19 | 22:06**
+
+Le dépôt est public sur GitHub. Passe de nettoyage des docs pour réduire la valeur de reconnaissance ciblée, sans toucher au comportement du cluster.
+
+- `AGENTS.md`, `_log.md` : retiré les noms de comptes (`akadmin`, l'utilisateur quotidien), le prénom de l'opérateur, les mentions du fournisseur SMTP et l'email personnel `philippe.lamy@lamiphil.dev` (remplacé par l'alias générique `admin@lamiphil.dev`).
+- `clusters/homelab/filebrowser/deployment.yaml` : commentaire scrubé (`Only the Documents folder`), aucun impact runtime.
+- Laissé tel quel : le domaine `lamiphil.dev` et les hostnames `*.lamiphil.dev` (déjà exposés via les logs Certificate Transparency), l'org GitHub `lamiphil/homelab`, les manifests fonctionnels (adresses IP MetalLB, `loadBalancerIP`, `admin_email` Grafana).
+- Non traité à la demande : réécriture de l'historique (`git filter-repo`) pour scrubber les anciens commits et les emails d'auteur professionnels.
+
+Validation : `kubectl kustomize clusters/homelab` rend sans changement, `git diff --check` OK.
+
 ## 2026-11-19 - Documentation à jour des sauvegardes
 
 **2026-11-19 | 21:56**
@@ -46,7 +59,7 @@ Terminé le nettoyage de `/srv/media` et la restriction de File Browser à `Docu
 - J'ai fait l'inventaire avant toute suppression : taille, nombre de fichiers, dernière modification et workload pour chaque dossier. Chaque suppression a été confirmée dossier par dossier.
 - `Movies/`, `TV/`, `downloads/` et `.Trash-1000/` sont supprimés pour de bon (~690G). `photos/` (bibliothèque Immich live) et `lost+found/` sont intacts.
 - File Browser monte seulement `Documents/` (`44d3f59`), toujours derrière Authentik.
-- PV/PVC `immich-upload-local` retirés ; une autre session les a inclus dans `db08e8d` et `b402568` (titres `MONITORING`). Philippe a supprimé le dossier vide sur minipc.
+- PV/PVC `immich-upload-local` retirés ; une autre session les a inclus dans `db08e8d` et `b402568` (titres `MONITORING`). L'opérateur a supprimé le dossier vide sur minipc.
 - Immich vérifié sain après le prune : 4 déploiements 1/1, API OK.
 
 ### Prochaine étape
@@ -128,7 +141,7 @@ Deploye le CronJob `immich-backup` (commit `6f216e5`) et declenche la premiere e
 
 **2026-11-19 | 16:34**
 
-Ajouté une section Infrastructure à Homepage avec les liens Cloudflare (dashboard, DNS lamiphil.dev, R2 buckets) et Fastmail. Icônes cloudflare.svg et mail.svg. Commit 7ce262c poussé et réconcilié par Flux.
+Ajouté une section Infrastructure à Homepage avec les liens Cloudflare (dashboard, DNS lamiphil.dev, R2 buckets) et le fournisseur mail. Icônes cloudflare.svg et mail.svg. Commit 7ce262c poussé et réconcilié par Flux.
 
 **2026-11-19 | 16:10**
 
@@ -144,10 +157,10 @@ Bilan du déploiement SSO Authentik :
 
 - Homepage reste ouvert. Prometheus, Alertmanager, File Browser et Praxis passent par le ForwardAuth (`b9a0ebe`). Grafana (`d1f3a6e`) et Immich (web et mobile) utilisent l'OIDC natif.
 - Plus aucun service protégé n'a d'IP MetalLB : `.70`, `.71`, `.72`, `.80` et `.96` sont fermées (`171fbdd`, `8f07161`). Seuls Traefik `.60` et Homepage `.61` gardent une IP.
-- La configuration faite dans l'interface d'Authentik n'est pas dans Git : le groupe `homelab-users`, l'utilisateur `lamiphil`, le fournisseur proxy `homelab-forward-auth` et l'application `Homelab` (liés à l'outpost intégré), et les fournisseurs OAuth2 `grafana` et `immich` (confidentiels, Authorization Code et Refresh token seulement, clé de signature auto-signée, consentement implicite). Seule la sauvegarde nocturne R2 d'Authentik permet de la restaurer.
+- La configuration faite dans l'interface d'Authentik n'est pas dans Git : le groupe `homelab-users`, l'utilisateur quotidien, le fournisseur proxy `homelab-forward-auth` et l'application `Homelab` (liés à l'outpost intégré), et les fournisseurs OAuth2 `grafana` et `immich` (confidentiels, Authorization Code et Refresh token seulement, clé de signature auto-signée, consentement implicite). Seule la sauvegarde nocturne R2 d'Authentik permet de la restaurer.
 - Les réglages OAuth d'Immich sont aussi dans son interface d'administration, donc ils dépendent de la base Immich et non de Git.
-- Points de secours : le formulaire local de Grafana, `https://immich.lamiphil.dev/auth/login?autoLaunch=0`, et `ak create_recovery_key 10 akadmin` dans le worker Authentik.
-- Reste à faire : enrôler un authentificateur (TOTP et jetons statiques) pour `lamiphil`, puis rendre la MFA obligatoire dans l'étape `default-authentication-mfa-validation`. Optionnel : retirer la deuxième connexion de File Browser et de Praxis.
+- Points de secours : le formulaire local de Grafana, `https://immich.lamiphil.dev/auth/login?autoLaunch=0`, et `ak create_recovery_key 10 l'administrateur Authentik` dans le worker Authentik.
+- Reste à faire : enrôler un authentificateur (TOTP et jetons statiques) pour le compte quotidien, puis rendre la MFA obligatoire dans l'étape `default-authentication-mfa-validation`. Optionnel : retirer la deuxième connexion de File Browser et de Praxis.
 
 **2026-11-19 | 04:05**
 
@@ -159,11 +172,11 @@ Grafana SSO validé; Immich OAuth activé dans l'interface (auto-launch actif, c
 
 **2026-11-19 | 03:51**
 
-Grafana : connexion OIDC native avec Authentik (application `grafana`, RS256, groupe `homelab-users` -> rôle Admin). Le client ID et le secret sont dans `grafana-oidc-secret.sops.yaml`. Le stockage de Grafana est éphémère, donc l'admin local est recréé à chaque démarrage avec l'email `philippe.lamy@lamiphil.dev` pour que la connexion SSO s'y rattache. Le formulaire local reste disponible en secours. Immich passe aussi en OIDC (application `immich`), configuré dans l'interface d'administration d'Immich.
+Grafana : connexion OIDC native avec Authentik (application `grafana`, RS256, groupe `homelab-users` -> rôle Admin). Le client ID et le secret sont dans `grafana-oidc-secret.sops.yaml`. Le stockage de Grafana est éphémère, donc l'admin local est recréé à chaque démarrage avec l'email `admin@lamiphil.dev` pour que la connexion SSO s'y rattache. Le formulaire local reste disponible en secours. Immich passe aussi en OIDC (application `immich`), configuré dans l'interface d'administration d'Immich.
 
 **2026-11-19 | 03:36**
 
-Homepage n'est plus derrière Authentik, à la demande de Philippe. Prometheus, Alertmanager, File Browser et Praxis passent maintenant par le ForwardAuth Authentik; le BasicAuth du monitoring et son Secret SOPS sont supprimés. Les LoadBalancers `.71`, `.72` et `.96` deviennent ClusterIP pour supprimer tout contournement. File Browser et Praxis gardent leur propre connexion pour l'instant. Grafana et Immich passeront en OIDC natif.
+Homepage n'est plus derrière Authentik, à la demande de l'opérateur. Prometheus, Alertmanager, File Browser et Praxis passent maintenant par le ForwardAuth Authentik; le BasicAuth du monitoring et son Secret SOPS sont supprimés. Les LoadBalancers `.71`, `.72` et `.96` deviennent ClusterIP pour supprimer tout contournement. File Browser et Praxis gardent leur propre connexion pour l'instant. Grafana et Immich passeront en OIDC natif.
 
 **2026-11-19 | 03:26**
 
@@ -171,11 +184,11 @@ Pilote SSO : Homepage passe par un middleware Traefik ForwardAuth vers l'outpost
 
 **2026-11-19 | 03:03**
 
-Flux a appliqué la configuration SMTP et redémarré le serveur et le worker Authentik sans erreur. La commande `ak test_email` a confirmé l'envoi d'un courriel à `admin@lamiphil.dev` par Fastmail.
+Flux a appliqué la configuration SMTP et redémarré le serveur et le worker Authentik sans erreur. La commande `ak test_email` a confirmé l'envoi d'un courriel à `admin@lamiphil.dev` par le fournisseur SMTP.
 
 **2026-11-19 | 03:00**
 
-J'ai configuré l'envoi SMTP Authentik par Fastmail sur le port 587 avec STARTTLS. Les courriels utilisent `Homelab <homelab@lamiphil.dev>` comme expéditeur; l'identifiant et le mot de passe applicatif sont conservés dans un Secret chiffré SOPS.
+J'ai configuré l'envoi SMTP Authentik par le fournisseur SMTP sur le port 587 avec STARTTLS. Les courriels utilisent `Homelab <homelab@lamiphil.dev>` comme expéditeur; l'identifiant et le mot de passe applicatif sont conservés dans un Secret chiffré SOPS.
 
 **2026-11-19 | 02:32**
 
@@ -284,7 +297,7 @@ J'ai corrigé le HelmRelease Immich.
 J'ai terminé la migration vers la topologie à trois noeuds.
 
 - Désinstallé la release Helm Loki orpheline et vérifié qu'aucune ressource ni aucun secret Helm Loki ne reste.
-- Créé des snapshots etcd avant le retrait, avant le changement de membership et après la migration. Les snapshots, tokens, configurations et sommes SHA-256 sont sauvegardés hors dépôt sous `/home/lamiphil/backups/homelab/k3s/` avec des permissions `0600`.
+- Créé des snapshots etcd avant le retrait, avant le changement de membership et après la migration. Les snapshots, tokens, configurations et sommes SHA-256 sont sauvegardés hors dépôt sous `/home/admin/backups/homelab/k3s/` avec des permissions `0600`.
 - Reconfiguré `minipc`, `datavault` et le kubeconfig local pour utiliser l'API de `magos` à `https://192.168.42.15:6443`.
 - Drained `pi` et `archlinux`, désactivé leurs services k3s-agent, puis supprimé leurs objets Node et leurs pods DaemonSet orphelins.
 - Drained `ubuntuserver`, retiré son membre etcd avec l'annotation gérée par k3s, désactivé son service k3s, puis supprimé son objet Node.

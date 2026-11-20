@@ -41,7 +41,7 @@ Immich, Grafana, Prometheus, Alertmanager, File Browser, and Praxis have no dedi
 
 ## SSO (Authentik)
 
-- Authentik runs at `https://auth.lamiphil.dev`. The admin account is `akadmin`; daily access uses `lamiphil`, a member of `homelab-users`.
+- Authentik runs at `https://auth.lamiphil.dev`. One break-glass administrator account is used only for recovery; day-to-day work uses a separate account that belongs to `homelab-users`.
 - ForwardAuth: Proxy Provider `homelab-forward-auth` (domain level, cookie domain `lamiphil.dev`), application `Homelab`, served by the embedded outpost. Access is bound to `homelab-users`.
 - Traefik Middleware `authentik-forward-auth` (one copy per namespace, in `authentik/forward-auth-middlewares.yaml`) protects Prometheus, Alertmanager, File Browser, and Praxis.
 - Homepage is intentionally not protected. Never put the middleware on Authentik's own Ingress.

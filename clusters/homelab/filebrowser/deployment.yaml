@@ -33,7 +33,7 @@ spec:
               containerPort: 80
               protocol: TCP
           volumeMounts:
-            # Only Philippe's documents; the rest of /srv/media (Immich library) stays hidden.
+            # Only the Documents folder; the rest of /srv/media (Immich library) stays hidden.
             - name: media
               mountPath: /srv
               subPath: Documents
