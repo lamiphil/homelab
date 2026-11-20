@@ -5,6 +5,20 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-19 - Documentation à jour des sauvegardes
+
+**2026-11-19 | 21:56**
+
+Rafraîchi la documentation pour refléter l'état actuel du cluster après le nettoyage de `/srv/media`, le cadrage de File Browser sur `Documents/` et l'ajout de la sauvegarde Immich vers R2.
+
+- `docs/homelab-topology.drawio` : la pile minipc n'affiche plus Homepage (planifiée librement et actuellement sur magos), le volume `/srv/media` est séparé en `/srv/media/photos` (bibliothèque Immich) et `/srv/media/Documents` (NFS pour File Browser), Grafana lit maintenant `/srv/praxis` en read-only, et trois arcs de sauvegarde pointent vers Cloudflare R2 avec leur heure et leur bucket.
+- `docs/homelab-backups.drawio` : nouveau diagramme dédié aux trois CronJobs nocturnes (Immich 03:00, Praxis 03:30, Authentik 04:00), chacune avec sa source, sa méthode rclone, son bucket R2 et sa politique de rétention 30 jours.
+- `docs/homelab-access.drawio` : inchangé côté flux ; seule l'étiquette du tuile sauvegarde Authentik gagne l'heure (04:00).
+- `README.md` : la ligne minipc ne liste plus Homepage, une section « Nightly backups » embarque le nouveau diagramme et un tableau synthétique (source, heure, nœud, bucket, rétention) qui renvoie vers AGENTS.md pour les restaurations.
+- AGENTS.md laissé tel quel : les tables de stockage, de secrets et les procédures de restauration étaient déjà à jour (commits 6f216e5, 44d3f59, b402568).
+
+Les PNG sont régénérés avec `drawio -x -f png -e -s 2 -b 20` et réparés via `repair_png.py` ; les XML draw.io sont réembarqués. Aucun manifeste Kubernetes touché.
+
 ## 2026-11-19 - Coût mensuel R2 et correction de la taille stockée
 
 **2026-11-19 | 17:40**
