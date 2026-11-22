@@ -112,7 +112,7 @@ data:
             href: https://grafana.lamiphil.dev/d/homelab-r2-backups
             description: Dashboard R2 Backups
         - Fastmail:
-            icon: mail.svg
+            icon: fastmail.svg
             href: https://app.fastmail.com
             description: Mailbox lamiphil.dev
   bookmarks.yaml: |
