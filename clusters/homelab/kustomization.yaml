@@ -20,6 +20,7 @@ resources:
 - filebrowser/media-pv.yaml
 - filebrowser/media-pvc.yaml
 - filebrowser/namespace.yaml
+- filebrowser/networkpolicy.yaml
 - filebrowser/service.yaml
 - flux-system/gotk-components.yaml
 - flux-system/gotk-sync.yaml

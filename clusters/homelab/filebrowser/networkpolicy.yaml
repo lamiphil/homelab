@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-traefik-only
+  namespace: filebrowser
+  annotations:
+    note: |
+      File Browser trusts the X-authentik-username header set by Traefik's
+      ForwardAuth. Traefik's authResponseHeaders overrides any client value,
+      so the only remaining spoof path is a pod inside the cluster hitting
+      the ClusterIP service directly. This policy denies that path: only the
+      Traefik pod in kube-system may open TCP/80 on File Browser. k3s ships
+      a built-in NetworkPolicy controller (kube-router) and enforces this.
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: filebrowser
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - protocol: TCP
+          port: 80

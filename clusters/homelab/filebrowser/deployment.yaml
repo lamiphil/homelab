@@ -17,6 +17,34 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: minipc
+      initContainers:
+        # Switch the server to Authentik ForwardAuth and keep the admin user in
+        # sync. BoltDB locks the file while the server runs, so this must happen
+        # before the main container starts. The script is idempotent so Flux can
+        # re-run it every time the pod is replaced.
+        - name: configure-proxy-auth
+          image: filebrowser/filebrowser:s6
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              DB=/database/filebrowser.db
+              FB="filebrowser -d $DB"
+              current=$($FB users ls 2>/dev/null | awk 'NR>1 && $1=="1" {print $2; exit}')
+              if [ "$current" = "admin" ]; then
+                $FB users update 1 --username lamiphil
+                echo "renamed user 1 admin -> lamiphil"
+              fi
+              $FB config set --auth.method=proxy --auth.header=X-authentik-username
+              echo "auth method set to proxy (header X-authentik-username)"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: database
+              mountPath: /database
       containers:
         - name: filebrowser
           image: filebrowser/filebrowser:s6
