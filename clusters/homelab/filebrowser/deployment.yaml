@@ -7,6 +7,11 @@ metadata:
     app.kubernetes.io/name: filebrowser
 spec:
   replicas: 1
+  # BoltDB in /database/filebrowser.db is held with an exclusive OS lock by the
+  # running server. The initContainer below needs that lock for `config set`,
+  # so the old pod must be gone before the new one starts.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/name: filebrowser
