@@ -24,8 +24,8 @@ spec:
       enableServiceLinks: true
       containers:
         - name: homepage
-          image: "ghcr.io/gethomepage/homepage:latest"
-          imagePullPolicy: Always
+          image: "ghcr.io/gethomepage/homepage:v2.8.0"
+          imagePullPolicy: IfNotPresent
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: gethomepage.dev,192.168.42.61,homepage.homelab,homepage.lamiphil.dev

@@ -5,6 +5,18 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-22 - Homepage : nouvelle mise en page et épinglage de version
+
+**2026-11-22 | 13:20**
+
+Refonte de la landing page `homepage.lamiphil.dev` pour qu'elle serve de vrai tableau de bord LAN. L'image bascule de `ghcr.io/gethomepage/homepage:latest` à `v2.8.0` (`imagePullPolicy: IfNotPresent`), ce qui fige la version actuellement en prod. Le widget `resources` utilisait `backend: resources` (invalide) et est désormais `backend: kubernetes` + `expanded: true` pour afficher CPU/RAM/disque du cluster.
+
+`widgets.yaml` affiche maintenant une bande d'info `datetime` + `search` + `kubernetes` (cluster et nœuds) + `resources`. `services.yaml` est regroupé en quatre colonnes — Applications (Immich, File Browser, Praxis), Monitoring (Grafana, Prometheus, Alertmanager), Identity (Authentik), Infrastructure (Cloudflare dashboard/DNS/R2 → dashboard Grafana R2, Fastmail) — chaque tuile portant son `namespace` + `app` pour que Homepage affiche le statut des pods via la ClusterRole existante. `settings.yaml` reçoit titre, thème sombre slate, fond Unsplash flouté, dispositions par groupe et `statusStyle: dot`.
+
+Les widgets de service (Immich, Grafana, Prometheus, Authentik) ont été préparés puis retirés : la génération des tokens a échoué deux fois à cause d'une règle SOPS que je lisais mal (le nom du fichier source doit matcher `*-secret.sops.yaml`). Les commandes shred étaient exécutées sans vérification, donc les plaintext tokens ont été perdus. Les tokens Authentik et Immich créés durant l'essai doivent être supprimés dans leurs UI respectives. À reprendre plus tard avec `sops -e -i /tmp/homepage-widgets-secret.sops.yaml` suivi d'une vérification `grep ENC\[AES256_GCM` avant tout `mv` ou `shred`.
+
+`HOMEPAGE_ALLOWED_HOSTS` reste à `gethomepage.dev,192.168.42.61,homepage.homelab,homepage.lamiphil.dev`.
+
 ## 2026-11-19 - Nettoyage des docs publiques
 
 **2026-11-19 | 22:06**
