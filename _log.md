@@ -5,6 +5,20 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-22 - SSO transparent pour File Browser et Praxis
+
+**2026-11-22 | 14:05**
+
+File Browser et Praxis ne demandent plus de second mot de passe après l'authentification Authentik. Les deux services sont déjà derrière la middleware Traefik `authentik-forward-auth` ; il restait à leur faire confiance au header `X-authentik-username` sans ouvrir une porte d'usurpation.
+
+- **File Browser** (`clusters/homelab/filebrowser/deployment.yaml`) : ajout d'un initContainer `configure-proxy-auth` qui, avec le serveur arrêté (BoltDB verrouille le fichier au runtime), renomme idempotemment l'utilisateur `admin` en `lamiphil` et bascule le DB sur `--auth.method=proxy --auth.header=X-authentik-username`. Le user garde son scope `.` et ses droits admin. Le mot de passe d'origine reste valide pour le mode `json` de break-glass. Image inchangée (`filebrowser/filebrowser:s6`, v2.63.5).
+- **Praxis** : ajout dans `main.go` d'un bypass par en-tête de confiance (env `PRAXIS_TRUSTED_HEADER`) qui précède la session cookie. Le login mot de passe reste actif pour l'accès port-forward. Test `TestTrustedHeaderAuth` ajouté, `go vet`/`go test -race` OK. Tag `v0.1.3`, CI GHCR verte (run 45057880482). Le manifeste `clusters/homelab/praxis/deployment.yaml` passe à `ghcr.io/lamiphil/praxis:0.1.3` et injecte `PRAXIS_TRUSTED_HEADER=X-authentik-username`.
+- **Anti-spoof** : la middleware Traefik liste tous les `X-authentik-*` dans `authResponseHeaders`, donc Traefik écrase les valeurs envoyées par un client externe. Pour bloquer le chemin interne (un pod compromis frappant directement la ClusterIP), ajout de `NetworkPolicy allow-traefik-only` dans les namespaces `filebrowser` et `praxis` : seul le pod Traefik (`kube-system`, label `app.kubernetes.io/name=traefik`) peut ouvrir TCP/80 (FB) ou TCP/8080 (Praxis). k3s applique les NetworkPolicies via son contrôleur kube-router intégré. Grafana lit Praxis via le PV read-only `praxis-data-grafana`, donc rien ne casse côté dashboards.
+- **Break-glass** documenté dans `AGENTS.md` : pour File Browser, suspendre Flux + `scale 0` + Job `filebrowser config set --auth.method=json` + port-forward ; pour Praxis, port-forward + mot de passe du secret.
+
+Validation : `kubectl kustomize clusters/homelab` rend sans erreur, `git diff --check` OK, `kubectl apply --dry-run=server` accepte les quatre fichiers modifiés/créés.
+
+
 ## 2026-11-22 - Homepage : nouvelle mise en page et épinglage de version
 
 **2026-11-22 | 13:20**

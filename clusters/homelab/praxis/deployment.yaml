@@ -26,7 +26,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: praxis
-          image: ghcr.io/lamiphil/praxis:0.1.2
+          image: ghcr.io/lamiphil/praxis:0.1.3
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
@@ -34,6 +34,11 @@ spec:
           env:
             - name: PRAXIS_SECURE_COOKIE
               value: "true"
+            # Trust the username forwarded by Traefik's Authentik middleware.
+            # Only safe because the Ingress is the single entry point and a
+            # NetworkPolicy blocks every other pod from opening TCP/8080 here.
+            - name: PRAXIS_TRUSTED_HEADER
+              value: X-authentik-username
           ports:
             - name: http
               containerPort: 8080

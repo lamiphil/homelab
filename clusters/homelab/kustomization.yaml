@@ -66,6 +66,7 @@ resources:
 - praxis/ingress.yaml
 - praxis/backup-cronjob.yaml
 - praxis/namespace.yaml
+- praxis/networkpolicy.yaml
 - praxis/praxis-backup-r2-secret.sops.yaml
 - praxis/praxis-secret.sops.yaml
 - praxis/service.yaml

@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-traefik-only
+  namespace: praxis
+  annotations:
+    note: |
+      Praxis trusts the X-authentik-username header set by Traefik's ForwardAuth
+      when PRAXIS_TRUSTED_HEADER is set. Traefik overrides the header for
+      external clients; this policy blocks the in-cluster path: only the Traefik
+      pod in kube-system may open TCP/8080 on Praxis. Grafana reads the SQLite
+      file through a read-only PV mounted directly from /srv/praxis (no network
+      hop), so monitoring keeps working.
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: praxis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - protocol: TCP
+          port: 8080
