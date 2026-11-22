@@ -17,6 +17,19 @@ Les widgets de service (Immich, Grafana, Prometheus, Authentik) ont été prépa
 
 `HOMEPAGE_ALLOWED_HOSTS` reste à `gethomepage.dev,192.168.42.61,homepage.homelab,homepage.lamiphil.dev`.
 
+**2026-11-22 | 13:45**
+
+Corrigé l'icône Fastmail et clôturé la refonte Homepage.
+
+- `mail.svg` n'existe pas dans `dashboard-icons` ; remplacé par `fastmail.svg` (commit `4546f22`).
+- Flux a rapproché, la tuile Fastmail affiche maintenant son logo après un rafraîchissement forcé (service worker).
+- Widgets de service (Immich, Grafana, Prometheus, Authentik) reportés : deux pertes successives des tokens plaintext à cause d'une mauvaise lecture de la règle SOPS (le nom du fichier d'entrée doit matcher `*-secret.sops.yaml`). Phase 1 (mise en page + épinglage `v2.8.0` + fix `resources`) livrée et stable.
+
+### Prochaine étape
+
+- Ajouter les widgets de service en utilisant `sops -e -i /tmp/homepage-widgets-secret.sops.yaml` puis `grep ENC\[AES256_GCM` avant tout `shred`.
+- Supprimer dans Authentik et Immich les tokens `homepage-widget` / `homepage` créés lors des tentatives.
+
 ## 2026-11-19 - Nettoyage des docs publiques
 
 **2026-11-19 | 22:06**
