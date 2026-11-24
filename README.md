@@ -32,7 +32,7 @@ Nothing is exposed to the Internet. Clients on the home network or on WireGuard 
 | Prometheus | `https://prometheus.lamiphil.dev` | Authentik ForwardAuth |
 | Alertmanager | `https://alertmanager.lamiphil.dev` | Authentik ForwardAuth |
 | File Browser | `https://filebrowser.lamiphil.dev` | Authentik ForwardAuth, then File Browser login |
-| Praxis | `https://praxis.lamiphil.dev` | Authentik ForwardAuth, then Praxis login |
+| Praxis | `https://praxis.lamiphil.dev` | Authentik ForwardAuth (transparent trusted-header login) |
 | Grafana | `https://grafana.lamiphil.dev` | Authentik OIDC (local admin login as fallback) |
 | Immich | `https://immich.lamiphil.dev` | Authentik OIDC, web and mobile (password login at `/auth/login?autoLaunch=0`) |
 | Authentik | `https://auth.lamiphil.dev` | Authentik itself |

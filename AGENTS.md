@@ -101,7 +101,7 @@ Praxis SQLite (read-only) -----------> Grafana
 - Grafana also queries the Cloudflare GraphQL Analytics API through the `yesoreyeram-infinity-datasource` plugin (pinned to `3.11.1`, datasource UID `cloudflare-r2`). The bearer token is read from env var `CLOUDFLARE_API_TOKEN`, loaded by `envFromSecrets` from `grafana-cloudflare-r2` and substituted into `secureJsonData.httpHeaderValue1` at provisioning time.
 - Dashboards are ConfigMaps labeled `grafana_dashboard=1`: `Homelab Cluster Health` (UID `homelab-cluster-health`), `Homelab Cluster Resources` (UID `homelab-cluster-resources`), `Praxis — Habitudes` (UID `praxis-habits`), and `Homelab R2 Backups` (UID `homelab-r2-backups`). The chart's bundled dashboards stay disabled (`grafana.defaultDashboardsEnabled=false`).
 - `Homelab Cluster Resources` covers CPU, RAM, storage, network I/O, requests vs limits vs actual, pod restarts, and OOMKills. Grafana template variables `node` and `namespace` are multi-select with `All`. Node-exporter metrics are joined to `node_uname_info` via `on(instance) group_left(nodename)` so they filter by `$node`; cAdvisor and kube-state-metrics series already carry `namespace` and `node`. HostPath volumes do not appear in `kubelet_volume_stats_*`; the per-node filesystem panel covers `/srv` (minipc) and `/datavault` (datavault).
-- In `Praxis — Habitudes`, an unrecorded day is a gap and breaks streaks. Streaks count from today if today is saved, otherwise from yesterday. Habits appear only on the days they were active.
+- In `Praxis — Habitudes`, an unrecorded day is a gap and breaks streaks. Streaks count from today if today is saved, otherwise from yesterday. Habits appear only on the days they were active. Sleep and coffee have separate averages and trend panels; they never enter habit completion or streak SQL.
 - `Homelab R2 Backups` shows storage size, object count, and Class A/B operations per bucket for `praxis-backups`, `authentik-backups`, and `immich-backups`, plus backup freshness per CronJob from `kube_cronjob_status_last_successful_time` (green <28 h, yellow <36 h, red beyond). It also projects the monthly Cloudflare R2 storage bill from the latest `max.payloadSize` snapshot and the standard rate of $0.015 per GB-month, both per bucket (gross) and account-wide (gross plus net after the 10 GB-month free tier; negative values mean the account is still inside the free tier). Operation costs are not shown — Class A at $4.50/M and Class B at $0.36/M are negligible for backup traffic. The dashboard uses Infinity 3.11's backend parser, which does not evaluate JSONata arithmetic, so storage selectors are raw `max.payloadSize` paths (metadata overhead is <0.1%) and all math runs through Grafana `calculateField`/`groupBy`/`reduce` transformations. The Cloudflare account tag is stored as a hidden dashboard constant, not as a secret.
 
 ## Secrets Management
@@ -112,10 +112,19 @@ Praxis SQLite (read-only) -----------> Grafana
 - `monitoring/kube-prometheus-stack/grafana-cloudflare-r2-secret.sops.yaml` holds a Cloudflare token scoped to **Account Analytics: Read** (via the "Read analytics & logs" template). It is used only by Grafana's Cloudflare R2 datasource and has no access to R2 bucket contents.
 - `authentik/authentik-backup-r2-secret.sops.yaml` contains a token limited to the `authentik-backups` bucket.
 - `cert-manager/cloudflare-api-token-secret.sops.yaml` holds a Cloudflare token limited to `Zone:DNS:Edit` and `Zone:Zone:Read` on `lamiphil.dev`.
+- `praxis/praxis-secret.sops.yaml` contains the password/session secrets plus the VAPID public/private key pair used for Web Push. The public key is safe to expose to subscribed browsers; the private key must remain encrypted.
+
+## Praxis tracking
+
+- Praxis `v0.2.1` adds nullable day-level `sleep_minutes` and `coffee_count` fields. Sleep accepts quarter-hour values from 0 to 24 hours and belongs to the wake date; coffee counts caffeinated coffee drinks from 0 to 20. Blank means unknown and differs from zero.
+- These fields are measurements, not habits. They do not affect habit completion, streaks, or calendar rules. The former binary `Sommeil` habit was archived with its existing history intact.
+- The in-app `Tendances` page shows the last 30 calendar days, averages over recorded values only, a 7–9 hour sleep target, and a maximum of 3 coffees.
+- Each browser can opt into one Web Push reminder after 20:00 America/Toronto when either measurement is blank. Subscriptions and once-per-day delivery state live in the Praxis SQLite database and are included in backups.
+- The schema migration is additive. `v0.1.3` can open the upgraded database and ignores the new nullable columns/tables. For break-glass rollback, pin the old image and manually reactivate the `Sommeil` habit; do not restore the database unless the new data itself must be discarded.
 
 ## Praxis backups
 
-- CronJob `praxis/praxis-backup` runs nightly at 03:30 America/Toronto. It takes a `sqlite3 .backup` snapshot, checks `PRAGMA integrity_check`, and uploads `praxis-<UTC timestamp>.db` to the Cloudflare R2 bucket `praxis-backups`.
+- CronJob `praxis/praxis-backup` runs nightly at 03:30 America/Toronto. It takes a `sqlite3 .backup` snapshot, checks `PRAGMA integrity_check`, and uploads `praxis-<UTC timestamp>.db` to the Cloudflare R2 bucket `praxis-backups`. The snapshot includes habits, sleep/coffee measurements, push subscriptions, and reminder delivery state.
 - An R2 lifecycle rule deletes copies after 30 days. The R2 token (Object Read & Write, this bucket only) is in `praxis/praxis-backup-r2-secret.sops.yaml`.
 - A failed run fires `KubeJobFailed`. To run a backup now: `kubectl -n praxis create job praxis-backup-manual --from=cronjob/praxis-backup`.
 

@@ -5,6 +5,15 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-24 - Praxis : suivi du sommeil et du café
+
+**2026-11-24 | 17:30**
+
+- Praxis passe à `ghcr.io/lamiphil/praxis:0.2.1` (v0.2.0 + correctif PWA/service worker à portée `/` pour Web Push mobile). Ajoute sommeil (heures au quart, jour du réveil) et cafés (0–20), page Tendances 30 jours, rappel Web Push à 20:00 Toronto si une mesure manque.
+- Migration SQLite additive (colonnes nullables + tables push). Sauvegarde R2 manuelle vérifiée avant le déploiement (`praxis-20261124T221010Z.db`). Rollback : repinner `0.1.3` et réactiver l'habitude `Sommeil`.
+- Clés VAPID ajoutées au secret SOPS `praxis-secret`. Dashboard Grafana Praxis : moyennes et séries sommeil/café, hors calcul des séries d'habitudes.
+- Limite connue : le rappel de la veille n'est pas rattrapé si Praxis est arrêté de 20:00 à minuit.
+
 ## 2026-11-22 - SSO transparent pour File Browser et Praxis
 
 **2026-11-22 | 14:05**

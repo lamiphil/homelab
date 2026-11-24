@@ -357,6 +357,265 @@ data:
               "show": false
             }
           }
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Sommeil moyen",
+          "description": "Moyenne des nuits enregistrées dans la plage sélectionnée. Les jours sans valeur sont exclus.",
+          "gridPos": {
+            "x": 0,
+            "y": 24,
+            "w": 12,
+            "h": 5
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "SELECT ROUND(AVG(sleep_minutes) / 60.0, 2) AS \"Heures\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND sleep_minutes IS NOT NULL",
+              "queryText": "SELECT ROUND(AVG(sleep_minutes) / 60.0, 2) AS \"Heures\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND sleep_minutes IS NOT NULL",
+              "timeColumns": []
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "suffix: h",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "orange",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 7
+                  },
+                  {
+                    "color": "orange",
+                    "value": 9.01
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": ""
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 5,
+          "type": "stat",
+          "title": "Cafés moyens",
+          "description": "Moyenne des jours enregistrés dans la plage sélectionnée. Les jours sans valeur sont exclus.",
+          "gridPos": {
+            "x": 12,
+            "y": 24,
+            "w": 12,
+            "h": 5
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "SELECT ROUND(AVG(coffee_count), 2) AS \"Cafés\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND coffee_count IS NOT NULL",
+              "queryText": "SELECT ROUND(AVG(coffee_count), 2) AS \"Cafés\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND coffee_count IS NOT NULL",
+              "timeColumns": []
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "decimals": 2,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 3.01
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": ""
+            },
+            "orientation": "auto",
+            "textMode": "auto",
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "wideLayout": true
+          }
+        },
+        {
+          "id": 6,
+          "type": "timeseries",
+          "title": "Sommeil",
+          "description": "Durée de sommeil par jour de réveil. La zone verte indique l’objectif de 7 à 9 heures.",
+          "gridPos": {
+            "x": 0,
+            "y": 29,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "SELECT date || 'T12:00:00Z' AS time, sleep_minutes / 60.0 AS \"Sommeil (h)\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND sleep_minutes IS NOT NULL ORDER BY date",
+              "queryText": "SELECT date || 'T12:00:00Z' AS time, sleep_minutes / 60.0 AS \"Sommeil (h)\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND sleep_minutes IS NOT NULL ORDER BY date",
+              "timeColumns": [
+                "time"
+              ]
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "suffix: h",
+              "min": 0,
+              "decimals": 2,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "green"
+              },
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 10,
+                "showPoints": "always",
+                "pointSize": 6,
+                "spanNulls": false,
+                "insertNulls": 129600000,
+                "axisLabel": "Heures"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
+        },
+        {
+          "id": 7,
+          "type": "timeseries",
+          "title": "Cafés",
+          "description": "Nombre de boissons au café caféinées. L’objectif est de 3 ou moins.",
+          "gridPos": {
+            "x": 12,
+            "y": 29,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "praxis-sqlite"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "frser-sqlite-datasource",
+                "uid": "praxis-sqlite"
+              },
+              "queryType": "table",
+              "rawQueryText": "SELECT date || 'T12:00:00Z' AS time, coffee_count AS \"Cafés\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND coffee_count IS NOT NULL ORDER BY date",
+              "queryText": "SELECT date || 'T12:00:00Z' AS time, coffee_count AS \"Cafés\" FROM days WHERE date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}' AND coffee_count IS NOT NULL ORDER BY date",
+              "timeColumns": [
+                "time"
+              ]
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "min": 0,
+              "decimals": 0,
+              "color": {
+                "mode": "fixed",
+                "fixedColor": "orange"
+              },
+              "custom": {
+                "drawStyle": "bars",
+                "lineWidth": 1,
+                "fillOpacity": 70,
+                "showPoints": "never",
+                "spanNulls": false,
+                "insertNulls": 129600000,
+                "axisLabel": "Cafés"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          }
         }
       ],
       "refresh": "",
@@ -372,5 +631,5 @@ data:
       "timezone": "America/Toronto",
       "title": "Praxis — Habitudes",
       "uid": "praxis-habits",
-      "version": 1
+      "version": 2
     }
