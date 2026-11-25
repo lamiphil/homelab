@@ -5,6 +5,26 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-25 - Praxis : validation en production
+
+**2026-11-25 | 08:33**
+
+J'ai validé Praxis 0.2.1 en production après la réconciliation Flux.
+
+- Validé : `/day`, `/trends`, `/sw.js` et le manifeste répondent 200, l'export CSV contient les colonnes sommeil et cafés.
+- Archivé l'habitude booléenne `Sommeil` au 2026-11-23, historique conservé.
+
+### Prochaine étape
+
+- Activer les notifications sur chaque appareil depuis Paramètres.
+
+## 2026-11-25 - Praxis : page Paramètres
+
+**2026-11-25**
+
+- Prépare Praxis 0.2.2 : la navigation expose `Paramètres`, avec le contrôle Web Push par appareil à 20:00; `Tendances` ne contient plus que les graphiques et les valeurs de suivi.
+- Image `ghcr.io/lamiphil/praxis:0.2.2` publiée après les vérifications `go vet` et `go test -race`; le manifeste GitOps est épinglé sur cette version pour la réconciliation Flux.
+
 ## 2026-11-24 - Praxis : suivi du sommeil et du café
 
 **2026-11-24 | 17:30**
