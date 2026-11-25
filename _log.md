@@ -5,6 +5,16 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-25 - Praxis : mesures génériques
+
+**2026-11-25 | 09:00**
+
+Déployé Praxis 0.3.0 : mesures quotidiennes génériques gérées depuis la page `Mesures`.
+
+- Sommeil et cafés migrés vers les tables `measurements` et `measurement_values`; les anciennes colonnes restent en miroir pour un retour arrière vers 0.2.2.
+- Migration répétée sur une copie de la base de production (montée, retour arrière 0.2.2, remontée) avant le déploiement; sauvegarde R2 manuelle prise juste avant.
+- Le tableau de bord Grafana `Praxis — Habitudes` remplace les panneaux fixes sommeil/café par un sélecteur `Mesure` (moyenne, jours dans l’objectif, jours enregistrés, tendance avec bornes).
+
 ## 2026-11-25 - Praxis : validation en production
 
 **2026-11-25 | 08:33**
