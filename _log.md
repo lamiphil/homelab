@@ -5,6 +5,18 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-27 - Praxis v0.4.0 : refonte de l'interface
+
+**2026-11-27 | 11:00**
+
+Déployé Praxis 0.4.0 : nouvelle interface «journal calme» et sous-menu des dates par habitude (inclut v0.3.1).
+
+- Sur téléphone, barre d'onglets en bas : Journée, Calendrier, Tendances, Réglages. `Réglages` regroupe Habitudes, Mesures, le rappel de 20 h, les exports CSV et la déconnexion.
+- Journée : liste groupée avec compteur, sélecteur de date sur le titre, note en une rangée, bouton Enregistrer toujours visible.
+- Calendrier : états marqués par la forme et non par la couleur seule, avec libellés accessibles en français.
+- Tendances : graphiques dessinés à la largeur réelle, libellés lisibles sur téléphone.
+- Aucun changement de schéma ni de route; retour arrière possible vers 0.3.0.
+
 ## 2026-11-25 - Praxis : mesures génériques
 
 **2026-11-25 | 09:00**
