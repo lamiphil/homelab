@@ -5,6 +5,18 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-27 - Praxis Tendances
+
+Tendances affiche maintenant toute la tendance, pas seulement les mesures
+actives. Mise à jour vers Praxis 0.5.0 (image `ghcr.io/lamiphil/praxis:0.5.0`).
+
+- Nouveau graphique dédié à la note de la journée (1–13), masqué quand la
+  plage ne contient aucune note enregistrée.
+- Bouton pour inclure les mesures archivées, avec leur date d'archivage.
+- Sélecteur 7 / 30 / 90 jours; la plage par défaut reste 30 jours.
+- Les jours sans donnée restent vides et ne comptent pas dans les moyennes.
+- AGENTS.md mis à jour pour refléter le nouveau comportement de Tendances.
+
 ## 2026-11-27 - Praxis v0.4.1 : rappel 20 h globalisé
 
 **2026-11-27 | 11:05**
@@ -108,7 +120,6 @@ File Browser et Praxis ne demandent plus de second mot de passe après l'authent
 - **Break-glass** documenté dans `AGENTS.md` : pour File Browser, suspendre Flux + `scale 0` + Job `filebrowser config set --auth.method=json` + port-forward ; pour Praxis, port-forward + mot de passe du secret.
 
 Validation : `kubectl kustomize clusters/homelab` rend sans erreur, `git diff --check` OK, `kubectl apply --dry-run=server` accepte les quatre fichiers modifiés/créés.
-
 
 ## 2026-11-22 - Homepage : nouvelle mise en page et épinglage de version
 

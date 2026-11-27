@@ -119,7 +119,7 @@ Praxis SQLite (read-only) -----------> Grafana
 - Praxis `v0.3.0` stores daily measurements generically in the `measurements` (definitions) and `measurement_values` (one row per date and measurement) tables. Definitions are managed on the in-app `Mesures` page: name, unit, precision, bounds, optional targets, order, and archival. The `key` column is a stable slug used by CSV and Grafana.
 - `Sommeil` (`sommeil`, 0–24 h by 0.25, target 7–9) and `Cafés` (`cafes`, 0–20, target 3 or less) were migrated from the legacy `days.sleep_minutes` and `days.coffee_count` columns, which remain as a mirror for rollback. Blank means unknown and differs from zero.
 - Measurements are not habits. They do not affect habit completion, streaks, or calendar rules.
-- `Tendances` shows the last 30 calendar days for every active measurement, averaging recorded values only.
+- `Tendances` opens on 30 days (switchable 7 / 30 / 90) and shows the day rating (1–13) as a dedicated chart alongside every active measurement; a toggle includes archived measurements with their archive date. Unrecorded days stay gaps and never count toward averages.
 - Each browser can opt into one Web Push reminder after 20:00 America/Toronto when any active measurement is blank for the day (global since `v0.4.1`; the legacy per-measurement `reminder` column is kept, frozen, and no longer written to). Subscriptions and once-per-day delivery state live in the Praxis SQLite database and are included in backups.
 - The schema migration is additive. For break-glass rollback, pin `0.2.2`: it reads the mirrored sleep and coffee columns and ignores the generic tables. Do not restore the database unless the new data itself must be discarded.
 
