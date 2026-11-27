@@ -5,6 +5,16 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-27 - Praxis v0.4.1 : rappel 20 h globalisé
+
+**2026-11-27 | 11:05**
+
+Déployé Praxis 0.4.1 : le rappel Web Push de 20 h n'a plus de case à cocher par mesure.
+
+- La case «Rappel à 20 h» disparaît du formulaire de la page `Mesures`. Les Réglages déclenchent maintenant le rappel dès qu'il reste une mesure active à remplir pour la journée.
+- Colonne `reminder` figée côté base: les valeurs existantes restent en place pour un retour arrière vers 0.4.0, mais plus aucun code en écriture.
+- Sauvegarde R2 prise avant le déploiement; aucun changement de schéma; retour arrière possible vers 0.4.0.
+
 ## 2026-11-27 - Praxis v0.4.0 : refonte de l'interface
 
 **2026-11-27 | 11:00**
@@ -16,6 +26,16 @@ Déployé Praxis 0.4.0 : nouvelle interface «journal calme» et sous-menu des d
 - Calendrier : états marqués par la forme et non par la couleur seule, avec libellés accessibles en français.
 - Tendances : graphiques dessinés à la largeur réelle, libellés lisibles sur téléphone.
 - Aucun changement de schéma ni de route; retour arrière possible vers 0.3.0.
+
+## 2026-11-27 - Praxis v0.3.1 : retrait du champ Ordre
+
+**2026-11-27 | 10:18**
+
+Mis à jour Praxis vers v0.3.1 : le champ «Ordre» visible est retiré du formulaire de modification.
+
+- L'ordre se change uniquement par glisser-déposer et «Enregistrer l'ordre».
+- En modification sans position fournie, la position actuelle est conservée.
+- Flux a réconcilié; le pod tourne en v0.3.1.
 
 ## 2026-11-25 - Praxis : mesures génériques
 
