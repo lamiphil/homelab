@@ -15,6 +15,19 @@ Déployé Praxis 0.3.0 : mesures quotidiennes génériques gérées depuis la pa
 - Migration répétée sur une copie de la base de production (montée, retour arrière 0.2.2, remontée) avant le déploiement; sauvegarde R2 manuelle prise juste avant.
 - Le tableau de bord Grafana `Praxis — Habitudes` remplace les panneaux fixes sommeil/café par un sélecteur `Mesure` (moyenne, jours dans l’objectif, jours enregistrés, tendance avec bornes).
 
+**2026-11-25 | 09:02**
+
+Validated the Praxis 0.3.0 rollout after Flux reconciliation.
+
+- Flux applied the commit; the Praxis deployment rolled out 1/1 on image `0.3.0`.
+- Checked app routes and both CSV exports through port-forward; external access still requires Authentik.
+- Ran every `Praxis — Habitudes` panel and variable query through live Grafana; all return data.
+- Restored another session's uncommitted journal edit after a script truncated this file.
+
+### Next step
+
+- Commit the pending journal edits once the other session finishes.
+
 ## 2026-11-25 - Praxis : validation en production
 
 **2026-11-25 | 08:33**
@@ -30,10 +43,17 @@ J'ai validé Praxis 0.2.1 en production après la réconciliation Flux.
 
 ## 2026-11-25 - Praxis : page Paramètres
 
-**2026-11-25**
+**2026-11-25 | 08:46**
 
-- Prépare Praxis 0.2.2 : la navigation expose `Paramètres`, avec le contrôle Web Push par appareil à 20:00; `Tendances` ne contient plus que les graphiques et les valeurs de suivi.
-- Image `ghcr.io/lamiphil/praxis:0.2.2` publiée après les vérifications `go vet` et `go test -race`; le manifeste GitOps est épinglé sur cette version pour la réconciliation Flux.
+Déployé Praxis 0.2.2 (nouvelle page `Paramètres`) après réconciliation Flux.
+
+- Praxis 0.2.2 expose `Paramètres` dans la navigation avec le contrôle Web Push par appareil à 20:00; `Tendances` n'affiche plus que les graphiques.
+- Image multi-arch `ghcr.io/lamiphil/praxis:0.2.2` publiée après `go vet` et `go test -race`, puis épinglée dans le manifeste GitOps.
+- Flux a appliqué la nouvelle révision et le déploiement est 1/1 sur l'image 0.2.2; vérifié les routes `/day`, `/trends`, `/settings` et `/sw.js` via port-forward, avec le ForwardAuth Authentik qui reste exigé depuis l'extérieur.
+
+### Prochaine étape
+
+- Réactiver la notification depuis `Paramètres` sur chaque appareil.
 
 ## 2026-11-24 - Praxis : suivi du sommeil et du café
 
@@ -335,6 +355,7 @@ J'ai ajouté les manifests Praxis sous `clusters/homelab/praxis/`.
 - Image publique `ghcr.io/lamiphil/praxis:0.1.0`, jamais `latest`.
 - Mise à jour vers `0.1.1`: `Referrer-Policy: same-origin`. Avec `no-referrer`, les navigateurs envoyaient `Origin: null` et la connexion était refusée («origine interdite»).
 - Mise à jour vers `0.1.2`: changer la date dans le sélecteur charge la journée tout de suite. Avant, il fallait cliquer sur «Voir», et la page pouvait afficher une date pendant que les cases et l'enregistrement visaient une autre journée.
+- Mise à jour vers `0.3.1`: l'interface de saisie des habitudes retire le champ «Ordre» visible. L'ordre se change uniquement par glisser-déposer et «Enregistrer l'ordre». Lors de la modification, le champ position manquant laisse la position courante inchangée.
 - Un seul replica avec la stratégie `Recreate`, puisque SQLite n'accepte qu'un écrivain.
 - Stockage: PV hostPath `Retain` sur `datavault:/srv/praxis`, avec une node affinity qui fixe le pod sur `datavault`. Le répertoire doit exister et appartenir à l'UID/GID `65532`.
 - Conteneur non root, système de fichiers racine en lecture seule, sondes sur `/healthz`, cookie de session `Secure`.
