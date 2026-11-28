@@ -5,10 +5,28 @@ tags: [homelab, log, kubernetes, k3s]
 ---
 # Homelab - Journal de travail
 
+## 2026-11-27 - Monitoring : sommeil au panneau Habitudes
+
+**2026-11-27 | 12:00**
+
+Ajouté les heures de sommeil au premier panneau du dashboard `Praxis — Habitudes`.
+
+- Nouvelle série bleue `Sommeil (h)`, lue depuis `measurement_values` jointe à
+  `measurements` sur `key='sommeil'`, via sous-requête corrélée sur `d.date`.
+- Axe caché (min 0, max 24, unit `h`) pour garder lisibles les deux axes
+  visibles : % habitudes à gauche, note 1–13 à droite ; la valeur de sommeil
+  reste dans l'infobulle.
+- Un jour sans mesure de sommeil reste un trou (la sous-requête renvoie NULL).
+- Titre et description du panneau mis à jour.
+- Validé : `kubectl kustomize`, parse JSON, `git diff --check` et requête live
+  via `/api/ds/query` (27 lignes sur 30 j, 4 valeurs de sommeil récentes
+  7/6.5/6.75/8).
+
 ## 2026-11-27 - Praxis Tendances
 
-Tendances affiche maintenant toute la tendance, pas seulement les mesures
-actives. Mise à jour vers Praxis 0.5.0 (image `ghcr.io/lamiphil/praxis:0.5.0`).
+**2026-11-27 | 11:34**
+
+Mis à jour vers Praxis 0.5.0 : Tendances affiche toute la tendance, pas seulement les mesures actives.
 
 - Nouveau graphique dédié à la note de la journée (1–13), masqué quand la
   plage ne contient aucune note enregistrée.

@@ -22,8 +22,8 @@ data:
         {
           "id": 1,
           "type": "timeseries",
-          "title": "Habitudes faites et note de la journée",
-          "description": "% des habitudes actives faites chaque jour enregistré (axe gauche) et note de la journée de 1 à 13 (axe droit). Un jour non enregistré laisse un trou.",
+          "title": "Habitudes faites, note de la journée et sommeil",
+          "description": "% des habitudes actives faites chaque jour enregistré (axe gauche), note de la journée de 1 à 13 (axe droit) et heures de sommeil (série bleue, axe caché pour garder les deux échelles visibles lisibles ; la valeur apparaît dans l'infobulle). Un jour non enregistré laisse un trou.",
           "gridPos": {
             "x": 0,
             "y": 0,
@@ -42,8 +42,9 @@ data:
                 "uid": "praxis-sqlite"
               },
               "queryType": "table",
-              "rawQueryText": "SELECT d.date || 'T12:00:00Z' AS time,\n  ROUND(100.0 * AVG(v.done)) AS \"Habitudes faites\",\n  d.rating AS \"Note de la journée\"\nFROM days d\nLEFT JOIN habit_values v ON v.day_date = d.date\nWHERE d.date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}'\nGROUP BY d.date\nORDER BY d.date",
-              "queryText": "SELECT d.date || 'T12:00:00Z' AS time,\n  ROUND(100.0 * AVG(v.done)) AS \"Habitudes faites\",\n  d.rating AS \"Note de la journée\"\nFROM days d\nLEFT JOIN habit_values v ON v.day_date = d.date\nWHERE d.date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}'\nGROUP BY d.date\nORDER BY d.date",
+              "rawQueryText": "SELECT d.date || 'T12:00:00Z' AS time,\n  ROUND(100.0 * AVG(v.done)) AS \"Habitudes faites\",\n  d.rating AS \"Note de la journée\",\n  (SELECT mv.value FROM measurement_values mv\n    JOIN measurements m ON m.id = mv.measurement_id\n    WHERE m.key = 'sommeil' AND mv.day_date = d.date) AS \"Sommeil (h)\"\nFROM days d\nLEFT JOIN habit_values v ON v.day_date = d.date\nWHERE d.date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}'\nGROUP BY d.date\nORDER BY d.date",
+              "queryText": "SELECT d.date || 'T12:00:00Z' AS time,\n  ROUND(100.0 * AVG(v.done)) AS \"Habitudes faites\",\n  d.rating AS \"Note de la journée\",\n  (SELECT mv.value FROM measurement_values mv\n    JOIN measurements m ON m.id = mv.measurement_id\n    WHERE m.key = 'sommeil' AND mv.day_date = d.date) AS \"Sommeil (h)\"\nFROM days d\nLEFT JOIN habit_values v ON v.day_date = d.date\nWHERE d.date BETWEEN '${__from:date:YYYY-MM-DD}' AND '${__to:date:YYYY-MM-DD}'\nGROUP BY d.date\nORDER BY d.date",
+
               "timeColumns": [
                 "time"
               ]
@@ -118,6 +119,45 @@ data:
                         4
                       ]
                     }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Sommeil (h)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "h"
+                  },
+                  {
+                    "id": "min",
+                    "value": 0
+                  },
+                  {
+                    "id": "max",
+                    "value": 24
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 2
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  },
+                  {
+                    "id": "custom.axisPlacement",
+                    "value": "hidden"
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 0
                   }
                 ]
               }
